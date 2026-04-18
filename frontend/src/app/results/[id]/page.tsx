@@ -210,13 +210,21 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
   const confidence = data.confidence || 0;
   const severity = data.severity || "LOW";
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const getDynamicApiBase = () => {
+    if (typeof window !== "undefined") {
+      const hostname = window.location.hostname;
+      if (hostname !== "localhost" && hostname !== "127.0.0.1") return `http://${hostname}:8000`;
+    }
+    return "http://localhost:8000";
+  };
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || getDynamicApiBase();
   const imageUrl = data.image_filename
     ? `${API_BASE}/api/history/${data.id}/image`
     : "https://images.unsplash.com/photo-1597113366853-9a93ad3f5d05?q=80&w=2000";
 
   return (
-    <main className="min-h-screen mesh-bg py-12 px-6">
+    <main className="min-h-screen mesh-bg py-8 md:py-12 px-4 md:px-6">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Nav */}
         <div className="flex items-center justify-between mb-4">
@@ -244,10 +252,10 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
               </div>
            </div>
 
-           <div className="flex flex-col justify-center space-y-6">
+           <div className="flex flex-col justify-center space-y-4 md:space-y-6">
               <div className="space-y-2">
                  <p className="text-emerald-600 font-black tracking-widest text-sm uppercase">{data.crop_type || "Crop"} Analysis</p>
-                 <h1 className="text-4xl lg:text-5xl font-black text-slate-900 leading-tight">{disease}</h1>
+                 <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">{disease}</h1>
                  {confidence < 85 && (
                    <div className="flex items-center gap-2 mt-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl">
                      <span className="text-amber-600 text-lg">⚠️</span>
@@ -352,14 +360,14 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Treatment Plans */}
         <div className="space-y-6">
-           <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+           <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
               <span className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-xl">🛡️</span>
               {t.protocol}
            </h2>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {/* Organic Plan */}
-              <div className="glass p-8 space-y-6 border-l-8 border-l-lime-500 bg-white/80">
+              <div className="glass p-6 md:p-8 space-y-6 border-l-8 border-l-lime-500 bg-white/80">
                  <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-lime-100 text-lime-700 rounded-2xl flex items-center justify-center text-2xl">🍃</div>
                     <h3 className="text-2xl font-black text-slate-900">{t.organic}</h3>
@@ -374,7 +382,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
               </div>
 
               {/* Chemical Plan */}
-              <div className="glass p-8 space-y-6 border-l-8 border-l-red-500 bg-white/80">
+              <div className="glass p-6 md:p-8 space-y-6 border-l-8 border-l-red-500 bg-white/80">
                  <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-red-100 text-red-700 rounded-2xl flex items-center justify-center text-2xl">🧪</div>
                     <h3 className="text-2xl font-black text-slate-900">{t.chemical}</h3>

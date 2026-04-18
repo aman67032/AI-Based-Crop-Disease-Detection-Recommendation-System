@@ -12,7 +12,8 @@ export default function SearchPage() {
     const fetchDiseases = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:8000/api/diseases?search=${query}`);
+        const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : `http://${window.location.hostname}:8000`;
+        const res = await fetch(`${API_BASE}/api/diseases?search=${query}`);
         const data = await res.json();
         setDiseases(data.diseases || []);
       } catch (err) {

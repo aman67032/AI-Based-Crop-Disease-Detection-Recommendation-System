@@ -50,6 +50,12 @@ export default function HomePage() {
     return () => window.removeEventListener("auth-change", checkAuth);
   }, []);
 
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraOpen]);
+
   if (!mounted) return null;
 
   const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
@@ -154,12 +160,12 @@ export default function HomePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12 animate-fade-in-up w-full">
           
           <div className="text-left space-y-6 md:space-y-8 md:w-1/2">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white leading-tight tracking-tight drop-shadow-md">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
               We take care of your <br className="hidden md:block"/>
               <span className="text-gradient-light">plants intelligently</span>
             </h1>
             
-            <p className="text-base md:text-xl text-white/90 leading-relaxed font-medium drop-shadow">
+            <p className="text-sm md:text-xl text-white/90 leading-relaxed font-semibold drop-shadow max-w-lg">
               {t.heroDesc}
             </p>
             <div className="pt-2 md:pt-4 flex flex-col sm:flex-row gap-3 md:gap-4">
@@ -169,9 +175,9 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="md:w-1/2 flex justify-center mt-10 md:mt-0">
+          <div className="md:w-1/2 flex justify-center mt-6 md:mt-0">
             {/* Image Collage */}
-            <div className="hero-collage scale-90 md:scale-100">
+            <div className="hero-collage scale-75 sm:scale-90 md:scale-100">
               <div className="hero-collage-img">
                 <img src="/Best%20Organic%20Fertilizers%20for%20Summer%20Growth.webp" alt="Organic Fertilizer" />
               </div>

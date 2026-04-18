@@ -67,11 +67,12 @@ app.include_router(detect.router)
 app.include_router(history.router)
 app.include_router(recommend.router)
 app.include_router(auth.router)
-from routes import weather, assistant, farm, chat
+from routes import weather, assistant, farm, chat, diseases
 app.include_router(weather.router)
 app.include_router(assistant.router)
 app.include_router(farm.router)
 app.include_router(chat.router)
+app.include_router(diseases.router)
 
 
 

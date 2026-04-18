@@ -74,6 +74,16 @@ export default function BottomNav() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       )
+    },
+    {
+      name: "Login",
+      path: "/login",
+      showWhenLoggedOutOnly: true,
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      )
     }
   ];
 
@@ -82,6 +92,7 @@ export default function BottomNav() {
       <div className="flex justify-between items-center py-2 px-1">
         {navItems.map((item, i) => {
           if (item.hideWhenLoggedOut && !isAuth) return null;
+          if (item.showWhenLoggedOutOnly && isAuth) return null;
           
           const isActive = pathname === item.path || (item.path === "/#scan" && pathname === "/");
           

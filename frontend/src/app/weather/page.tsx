@@ -12,8 +12,9 @@ export default function WeatherPage() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : `http://${window.location.hostname}:8000`;
           try {
-            const res = await fetch(`http://localhost:8000/api/weather?lat=${latitude}&lon=${longitude}`);
+            const res = await fetch(`${API_BASE}/api/weather?lat=${latitude}&lon=${longitude}`);
             const data = await res.json();
             
             if (data.current) {
@@ -35,7 +36,8 @@ export default function WeatherPage() {
           // Fallback to New Delhi if location denied
           const fetchFallback = async () => {
             try {
-              const res = await fetch(`http://localhost:8000/api/weather?lat=28.6139&lon=77.2090`);
+              const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : `http://${window.location.hostname}:8000`;
+              const res = await fetch(`${API_BASE}/api/weather?lat=28.6139&lon=77.2090`);
               const data = await res.json();
               if (data.current) {
                 setWeatherData({

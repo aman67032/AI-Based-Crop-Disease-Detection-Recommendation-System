@@ -2,7 +2,18 @@
  * KisanAI API client — communicates with FastAPI backend.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const getApiBase = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname;
+    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+      return `http://${hostname}:8000`;
+    }
+  }
+  return "http://localhost:8000";
+};
+
+const API_BASE = getApiBase();
 
 export const getToken = () => typeof window !== "undefined" ? localStorage.getItem("kisan_token") : null;
 export const setToken = (token: string) => typeof window !== "undefined" && localStorage.setItem("kisan_token", token);
