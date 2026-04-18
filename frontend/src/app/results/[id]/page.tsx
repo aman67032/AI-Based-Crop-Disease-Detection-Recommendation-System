@@ -11,7 +11,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
   const [speaking, setSpeaking] = useState(false);
 
   useEffect(() => {
-    getDetection(Number(id))
+    getDetection(id)
       .then(setData)
       .catch(() => setData(null))
       .finally(() => setLoading(false));

@@ -8,7 +8,7 @@ export const getToken = () => typeof window !== "undefined" ? localStorage.getIt
 export const setToken = (token: string) => typeof window !== "undefined" && localStorage.setItem("kisan_token", token);
 export const removeToken = () => typeof window !== "undefined" && localStorage.removeItem("kisan_token");
 
-export const getAuthHeaders = () => {
+export const getAuthHeaders = (): Record<string, string> => {
   const token = getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };

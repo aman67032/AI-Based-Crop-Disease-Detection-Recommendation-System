@@ -7,6 +7,5 @@ venv/
 *.egg-info/
 dist/
 build/
-ml/models/*.pth
-ml/models/*.pt
+# Removed model ignores since kisanai_model.pth is only 16MB and needs to be deployed
 .pytest_cache/
