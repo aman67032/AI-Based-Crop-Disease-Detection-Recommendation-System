@@ -104,7 +104,10 @@ async def analyze_image_with_grok(image_bytes: bytes, crop_hint: str = "") -> st
             }],
             max_tokens=200,
         )
-        return response.choices[0].message.content
+        result = response.choices[0].message.content
+        if not result:
+            raise ValueError("Grok returned empty response")
+        return result
     except Exception as e:
         logger.error(f"Grok Vision error: {e}")
-        return ""
+        raise  # Let caller handle it

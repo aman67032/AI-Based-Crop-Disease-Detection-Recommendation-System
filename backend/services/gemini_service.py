@@ -104,7 +104,10 @@ async def analyze_image_with_gemini(image_bytes: bytes, crop_hint: str = "") -> 
             }],
             max_tokens=200,
         )
-        return response.choices[0].message.content
+        result = response.choices[0].message.content
+        if not result:
+            raise ValueError("Gemini returned empty response")
+        return result
     except Exception as e:
         logger.error(f"Gemini Vision error: {e}")
-        return ""
+        raise  # Let caller handle it

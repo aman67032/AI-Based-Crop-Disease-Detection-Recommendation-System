@@ -118,20 +118,26 @@ async def reanalyze_detection(detection_id: str, db: AsyncIOMotorDatabase = Depe
     # Try Gemini Vision first, then Grok Vision
     analysis = ""
     source = ""
+    errors = []
+
     try:
         from services import gemini_service
         analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_hint)
         source = "gemini_vision"
-    except Exception:
+    except Exception as e:
+        errors.append(f"Gemini: {str(e)}")
+
+    if not analysis:
         try:
             from services import grok_service
             analysis = await grok_service.analyze_image_with_grok(image_bytes, crop_hint)
             source = "grok_vision"
         except Exception as e:
-            raise HTTPException(503, f"No vision API available: {e}")
+            errors.append(f"Grok: {str(e)}")
 
     if not analysis:
-        raise HTTPException(503, "Vision API returned empty analysis")
+        error_detail = " | ".join(errors) if errors else "Both APIs returned empty responses"
+        raise HTTPException(503, f"Vision analysis failed: {error_detail}")
 
     return {
         "analysis": analysis,
