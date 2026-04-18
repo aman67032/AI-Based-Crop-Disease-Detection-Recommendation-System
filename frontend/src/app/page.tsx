@@ -365,7 +365,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 relative z-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <img src="/logo(leafscan).png" alt="Logo" className="w-10 h-10 object-contain brightness-0 invert" />
+              <img src="/logo(leafscan).png" alt="Logo" className="w-10 h-10 object-contain" />
               <span className="font-extrabold text-2xl tracking-tight text-white">LeafScan</span>
             </div>
             <p className="text-[var(--green-200)] max-w-sm font-medium">
