@@ -69,7 +69,14 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
     setLang(savedLang);
 
     getDetection(id)
-      .then(setData)
+      .then((d) => {
+        setData(d);
+        // If the backend already ran Vision AI (low confidence), show it automatically
+        if (d.vision_analysis) {
+          setVisionAnalysis(d.vision_analysis);
+          setVisionSource(d.vision_source || "gemini_vision");
+        }
+      })
       .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [id]);
@@ -161,9 +168,17 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
            </div>
 
            <div className="flex flex-col justify-center space-y-6">
-              <div className="space-y-1">
+              <div className="space-y-2">
                  <p className="text-emerald-600 font-black tracking-widest text-sm uppercase">{data.crop_type || "Crop"} Analysis</p>
                  <h1 className="text-4xl lg:text-5xl font-black text-slate-900 leading-tight">{disease}</h1>
+                 {confidence < 85 && (
+                   <div className="flex items-center gap-2 mt-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl">
+                     <span className="text-amber-600 text-lg">⚠️</span>
+                     <p className="text-amber-800 font-bold text-sm">
+                       {lang === 'hi' ? 'कम सटीकता — यह रोग मॉडल के प्रशिक्षण सेट में नहीं हो सकता। नीचे Vision AI विश्लेषण देखें।' : 'Low confidence — this disease may be outside the model\'s training set. See Vision AI analysis below.'}
+                     </p>
+                   </div>
+                 )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

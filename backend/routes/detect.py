@@ -73,6 +73,7 @@ async def detect_disease(
 ):
     """
     Upload a leaf image → get disease detection + treatment recommendation.
+    If CNN confidence is low (<85%), automatically uses Gemini Vision for better accuracy.
     """
     # Validate file type
     if file.content_type not in ("image/jpeg", "image/png", "image/jpg", "image/webp"):
@@ -87,11 +88,30 @@ async def detect_disease(
     result = predict(image_bytes)
     primary = result["primary"]
     disease_key = primary["class_key"]
+    cnn_confidence = primary["confidence"]
 
-    # 2. Look up treatment data
+    # 2. If CNN confidence is low, try Gemini/Grok Vision for better accuracy
+    vision_analysis = ""
+    vision_source = ""
+    if cnn_confidence < 85:
+        logger.info(f"Low CNN confidence ({cnn_confidence}%), trying Vision AI...")
+        try:
+            from services import gemini_service
+            vision_analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_type)
+            vision_source = "gemini_vision"
+        except Exception as e:
+            logger.warning(f"Gemini Vision fallback failed: {e}")
+            try:
+                from services import grok_service
+                vision_analysis = await grok_service.analyze_image_with_grok(image_bytes, crop_type)
+                vision_source = "grok_vision"
+            except Exception as e2:
+                logger.warning(f"Grok Vision fallback also failed: {e2}")
+
+    # 3. Look up treatment data
     treatment_data = TREATMENT_DB.get(disease_key, {})
 
-    # 3. Get AI recommendation (if not healthy)
+    # 4. Get AI recommendation (if not healthy)
     rec_text = ""
     rec_source = "none"
     if not primary["is_healthy"]:
@@ -99,7 +119,7 @@ async def detect_disease(
             primary["disease"], treatment_data, language, primary["crop"]
         )
 
-    # 4. Save detection to database
+    # 5. Save detection to database
     from datetime import datetime, timezone
     
     detection_doc = {
@@ -110,13 +130,15 @@ async def detect_disease(
         "top_predictions": result["predictions"],
         "image_filename": file.filename,
         "image_data": image_bytes,  # Store as binary in Mongo
+        "vision_analysis": vision_analysis,  # Store vision result if available
+        "vision_source": vision_source,
         "created_at": datetime.now(timezone.utc)
     }
     
     insert_result = await db.detections.insert_one(detection_doc)
     detection_id = insert_result.inserted_id
 
-    # 5. Save recommendation
+    # 6. Save recommendation
     if rec_text:
         recommendation_doc = {
             "detection_id": detection_id,
@@ -127,7 +149,7 @@ async def detect_disease(
         }
         await db.recommendations.insert_one(recommendation_doc)
 
-    # 6. Build response
+    # 7. Build response
     return {
         "id": str(detection_id),
         "detection": {
@@ -144,6 +166,8 @@ async def detect_disease(
             "source": rec_source,
             "treatment_data": treatment_data,
         },
+        "vision_analysis": vision_analysis if vision_analysis else None,
+        "vision_source": vision_source if vision_source else None,
         "model_version": result["model_version"],
     }
 

@@ -65,6 +65,8 @@ async def get_detection(detection_id: str, db: AsyncIOMotorDatabase = Depends(ge
         "severity": detection.get("severity"),
         "top_predictions": detection.get("top_predictions", []),
         "image_filename": detection.get("image_filename"),
+        "vision_analysis": detection.get("vision_analysis"),
+        "vision_source": detection.get("vision_source"),
         "created_at": detection.get("created_at").isoformat() if detection.get("created_at") else None,
         "recommendation": {
             "text": rec.get("treatment_text"),
