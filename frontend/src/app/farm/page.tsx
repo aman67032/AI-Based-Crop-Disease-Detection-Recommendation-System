@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { analyzeFarm, farmChat, saveFarmScan, getToken } from "@/lib/api";
+import { analyzeFarm, farmChat, saveFarmScan, getFarmScans, getToken } from "@/lib/api";
 
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
@@ -32,12 +32,20 @@ export default function FarmMapPage() {
   // Save
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  const isLoggedIn = typeof window !== "undefined" && !!getToken();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [farmHistory, setFarmHistory] = useState<any[]>([]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
+
+  useEffect(() => {
+    const token = getToken();
+    setIsLoggedIn(!!token);
+    if (token) {
+      getFarmScans().then(data => setFarmHistory(data.scans || [])).catch(() => {});
+    }
+  }, []);
 
   const handlePolygonDrawn = (coords: number[][]) => {
     setPolygon(coords);
@@ -92,8 +100,12 @@ export default function FarmMapPage() {
     if (!polygon || !ndviUrl) return;
     setSaving(true);
     try {
-      await saveFarmScan(polygon, ndviUrl, aiAnalysis || "");
+      const savedScan = await saveFarmScan(polygon, ndviUrl, aiAnalysis || "");
       setSaved(true);
+      // Refresh history
+      if (isLoggedIn) {
+        getFarmScans().then(data => setFarmHistory(data.scans || [])).catch(() => {});
+      }
     } catch (err) {
       console.error("Save failed:", err);
     } finally {
@@ -253,6 +265,42 @@ export default function FarmMapPage() {
                 </div>
               )}
             </div>
+
+            {/* Farm History Sidebar */}
+            {isLoggedIn && (
+              <div className="glass p-6 rounded-3xl border-2 border-emerald-100 shadow-xl space-y-4 bg-white/80">
+                <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                  <span>📜</span> My Farm Scans
+                </h2>
+                <div className="max-h-[300px] overflow-y-auto space-y-3 pr-2">
+                  {farmHistory.length === 0 ? (
+                    <p className="text-sm text-slate-500 font-medium text-center py-4">No scans saved yet.</p>
+                  ) : (
+                    farmHistory.map(scan => (
+                      <div key={scan.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer hover:border-emerald-400 transition-colors"
+                        onClick={() => {
+                          setPolygon(scan.coordinates);
+                          setNdviUrl(scan.ndvi_url);
+                          setAiAnalysis(scan.analysis);
+                          setChatMessages([]);
+                          setSaved(true);
+                        }}
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-bold text-slate-800 text-sm">
+                            {scan.location_name || `Scan (${scan.coordinates.length} points)`}
+                          </span>
+                          <span className="text-xs text-slate-400">
+                            {new Date(scan.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 line-clamp-2">{scan.analysis || "No analysis available"}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
