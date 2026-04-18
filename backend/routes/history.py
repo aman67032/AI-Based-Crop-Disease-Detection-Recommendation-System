@@ -115,17 +115,25 @@ async def reanalyze_detection(detection_id: str, db: AsyncIOMotorDatabase = Depe
     image_bytes = detection["image_data"]
     crop_hint = detection.get("crop_type", "")
 
-    # Try Gemini Vision first, then Grok Vision
+    # Try NVIDIA → Gemini → Grok Vision
     analysis = ""
     source = ""
     errors = []
 
     try:
-        from services import gemini_service
-        analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_hint)
-        source = "gemini_vision"
+        from services import nvidia_service
+        analysis = await nvidia_service.analyze_image_with_nvidia(image_bytes, crop_hint)
+        source = "nvidia_vision"
     except Exception as e:
-        errors.append(f"Gemini: {str(e)}")
+        errors.append(f"NVIDIA: {str(e)}")
+
+    if not analysis:
+        try:
+            from services import gemini_service
+            analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_hint)
+            source = "gemini_vision"
+        except Exception as e:
+            errors.append(f"Gemini: {str(e)}")
 
     if not analysis:
         try:

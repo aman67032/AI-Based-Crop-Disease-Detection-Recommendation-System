@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.0-flash"
 
+    # NVIDIA API (Llama 4 Maverick)
+    NVIDIA_API_KEY: str = ""
+    NVIDIA_MODEL: str = "meta/llama-4-maverick-17b-128e-instruct"
+
     # Ollama (Local LLM)
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     OLLAMA_MODEL: str = "gemma4"

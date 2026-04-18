@@ -7,7 +7,7 @@ from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from database.mongo import get_db
 from ml.model_inference import predict
-from services import grok_service, gemini_service, ollama_service
+from services import nvidia_service, grok_service, gemini_service, ollama_service
 import json
 import os
 import logging
@@ -28,9 +28,17 @@ except FileNotFoundError:
 async def _get_ai_recommendation(
     disease_name: str, treatment_data: dict, language: str, crop: str
 ) -> tuple[str, str]:
-    """Try AI providers in order: Grok → Gemini → Ollama → static fallback."""
+    """Try AI providers in order: NVIDIA → Grok → Gemini → Ollama → static fallback."""
 
-    # 1. Try Grok API
+    # 1. Try NVIDIA API (Llama 4 Maverick)
+    try:
+        text = await nvidia_service.get_recommendation(disease_name, treatment_data, language, crop)
+        if text:
+            return text, "nvidia"
+    except Exception as e:
+        logger.warning(f"NVIDIA failed: {e}")
+
+    # 2. Try Grok API
     try:
         text = await grok_service.get_recommendation(disease_name, treatment_data, language, crop)
         if text:
@@ -38,7 +46,7 @@ async def _get_ai_recommendation(
     except Exception as e:
         logger.warning(f"Grok failed: {e}")
 
-    # 2. Try Gemini API
+    # 3. Try Gemini API
     try:
         text = await gemini_service.get_recommendation(disease_name, treatment_data, language, crop)
         if text:
@@ -46,7 +54,7 @@ async def _get_ai_recommendation(
     except Exception as e:
         logger.warning(f"Gemini failed: {e}")
 
-    # 3. Try Ollama (local)
+    # 4. Try Ollama (local)
     try:
         if await ollama_service.is_available():
             text = await ollama_service.get_recommendation(disease_name, treatment_data, language, crop)
@@ -55,7 +63,7 @@ async def _get_ai_recommendation(
     except Exception as e:
         logger.warning(f"Ollama failed: {e}")
 
-    # 4. Static fallback
+    # 5. Static fallback
     fallback = f"""Disease: {disease_name}
 Chemical Treatment: {treatment_data.get('chemical', 'Consult local agronomist')}
 Organic Option: {treatment_data.get('organic', 'Neem oil spray')}
@@ -90,23 +98,31 @@ async def detect_disease(
     disease_key = primary["class_key"]
     cnn_confidence = primary["confidence"]
 
-    # 2. If CNN confidence is low, try Gemini/Grok Vision for better accuracy
+    # 2. If CNN confidence is low, try Vision AI for better accuracy
     vision_analysis = ""
     vision_source = ""
     if cnn_confidence < 85:
         logger.info(f"Low CNN confidence ({cnn_confidence}%), trying Vision AI...")
+        # Try NVIDIA first
         try:
-            from services import gemini_service
-            vision_analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_type)
-            vision_source = "gemini_vision"
+            vision_analysis = await nvidia_service.analyze_image_with_nvidia(image_bytes, crop_type)
+            vision_source = "nvidia_vision"
         except Exception as e:
-            logger.warning(f"Gemini Vision fallback failed: {e}")
+            logger.warning(f"NVIDIA Vision failed: {e}")
+        # Try Gemini
+        if not vision_analysis:
             try:
-                from services import grok_service
+                vision_analysis = await gemini_service.analyze_image_with_gemini(image_bytes, crop_type)
+                vision_source = "gemini_vision"
+            except Exception as e:
+                logger.warning(f"Gemini Vision failed: {e}")
+        # Try Grok
+        if not vision_analysis:
+            try:
                 vision_analysis = await grok_service.analyze_image_with_grok(image_bytes, crop_type)
                 vision_source = "grok_vision"
-            except Exception as e2:
-                logger.warning(f"Grok Vision fallback also failed: {e2}")
+            except Exception as e:
+                logger.warning(f"Grok Vision failed: {e}")
 
     # 3. Look up treatment data
     treatment_data = TREATMENT_DB.get(disease_key, {})
