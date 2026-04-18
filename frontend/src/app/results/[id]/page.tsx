@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function ResultDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const [data, setData] = useState<Record<string, unknown> | null>(null);
+  const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [speaking, setSpeaking] = useState(false);
 
@@ -53,9 +53,12 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
   }
 
   const displayName = String(data.disease_name || "").replace(/___/g, " — ").replace(/_/g, " ");
-  const rec = data.recommendation as Record<string, unknown> | null;
+  const rec = data.recommendation;
   const severity = String(data.severity || "NONE");
   const sevClass = `severity-${severity.toLowerCase()}`;
+  
+  const recText = rec?.text ? String(rec.text) : "";
+  const recSource = rec?.source ? String(rec.source) : "AI";
 
   return (
     <main className="min-h-dvh px-4 py-6" style={{ background: "var(--bg)" }}>
@@ -92,7 +95,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         {Array.isArray(data.top_predictions) && data.top_predictions.length > 1 ? (
           <div className="glass-card p-4 mb-4">
             <h3 className="text-sm font-semibold mb-2" style={{ color: "var(--text-secondary)" }}>All Predictions</h3>
-            {(data.top_predictions as Array<Record<string, unknown>>).map((p, i) => (
+            {data.top_predictions.map((p: any, i: number) => (
               <div key={i} className="flex justify-between py-1 text-sm">
                 <span>{String(p.disease || p.class_key || "")}</span>
                 <span className="font-medium">{Number(p.confidence || 0).toFixed(1)}%</span>
@@ -102,7 +105,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         ) : null}
 
         {/* Recommendation */}
-        {!!rec && typeof rec.text === "string" && severity !== "NONE" ? (
+        {recText && severity !== "NONE" ? (
           <div className="glass-card p-5 mb-4 border-l-4 border-red-500 bg-red-50/30">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold flex items-center gap-2 text-red-700">
@@ -110,15 +113,15 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
                 What to do now
               </h3>
               <span className="text-xs px-2 py-1 rounded-full bg-red-100 text-red-800 font-medium">
-                via {String(rec.source || "AI")}
+                via {recSource}
               </span>
             </div>
             <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium" style={{ color: "var(--text)" }}>
-              {String(rec.text)}
+              {recText}
             </div>
           </div>
         ) : null}
-        {!!rec && typeof rec.text === "string" && severity === "NONE" ? (
+        {recText && severity === "NONE" ? (
           <div className="glass-card p-5 mb-4 border-l-4 border-green-500 bg-green-50/30">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold flex items-center gap-2 text-green-700">
@@ -127,7 +130,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
               </h3>
             </div>
             <div className="text-sm leading-relaxed whitespace-pre-wrap font-medium" style={{ color: "var(--text)" }}>
-              {String(rec.text)}
+              {recText}
             </div>
           </div>
         ) : null}
