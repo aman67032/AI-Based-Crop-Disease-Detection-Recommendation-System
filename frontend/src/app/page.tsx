@@ -25,7 +25,9 @@ const TRANSLATIONS: Record<string, any> = {
     myScans: "My Scans",
     logout: "Logout",
     login: "Log In",
-    signup: "Get Started"
+    signup: "Get Started",
+    farmMap: "Farm Map",
+    assistant: "AI Assistant"
   },
   hi: {
     heroTag: "अगली पीढ़ी का फसल संरक्षण",
@@ -48,7 +50,9 @@ const TRANSLATIONS: Record<string, any> = {
     myScans: "मेरे स्कैन",
     logout: "लॉगआउट",
     login: "लॉग इन",
-    signup: "शुरू करें"
+    signup: "शुरू करें",
+    farmMap: "खेत का नक्शा",
+    assistant: "AI सहायक"
   }
 };
 
@@ -135,6 +139,11 @@ export default function HomePage() {
           
           {isAuth ? (
             <div className="flex gap-3">
+              <Link href="/farm">
+                <button className="px-5 py-2.5 rounded-xl font-bold text-sm bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition-all shadow-md">
+                  {t.farmMap}
+                </button>
+              </Link>
               <Link href="/history">
                 <button className="px-5 py-2.5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-md">
                   {t.myScans}
@@ -195,6 +204,11 @@ export default function HomePage() {
                   <svg className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
+                </button>
+              </Link>
+              <Link href="/farm">
+                <button className="btn-outline w-full sm:w-auto bg-white/50 backdrop-blur-sm border-emerald-500 text-emerald-700 hover:bg-emerald-50">
+                  🛰️ {t.farmMap}
                 </button>
               </Link>
               <Link href="/register">
