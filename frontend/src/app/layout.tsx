@@ -1,24 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-outfit",
 });
 
 export const metadata: Metadata = {
-  title: "Kisan Sathi — Crop Disease Detection",
+  title: "Leaf Scan — AI Crop Disease Detection",
   description:
-    "AI-powered crop disease detection & smart advisory for Indian farmers. Scan your crop, get instant diagnosis and treatment in your language.",
-  keywords: ["crop disease", "plant disease detection", "AI agriculture", "Kisan Sathi", "farmer", "India"],
+    "Premium AI-powered crop disease detection. Scan your leaves, get instant diagnosis and expert treatment plans.",
+  keywords: ["leaf scan", "plant disease detection", "AI agriculture", "crop health", "smart farming"],
   manifest: "/manifest.json",
   icons: { icon: "/favicon.ico" },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#16a34a",
+  themeColor: "#059669",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -30,14 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={outfit.variable}>
       <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased overflow-x-hidden">{children}</body>
     </html>
   );
 }

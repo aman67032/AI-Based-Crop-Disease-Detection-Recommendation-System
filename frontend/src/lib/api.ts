@@ -174,3 +174,21 @@ export async function loginUser(data: Record<string, string>) {
   }
   return res.json();
 }
+
+/**
+ * Advanced Vision Analysis (Grok/Gemini)
+ */
+export async function detectVision(file: File, cropType: string = "") {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("crop_type", cropType);
+
+  const res = await fetch(`${API_BASE}/api/detect/vision`, {
+    method: "POST",
+    headers: { ...getAuthHeaders() },
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Vision analysis failed");
+  return res.json();
+}

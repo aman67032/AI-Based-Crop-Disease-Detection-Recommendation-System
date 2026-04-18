@@ -3,205 +3,298 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-const CROPS = [
-  { key: "apple", emoji: "🍎", en: "Apple", hi: "सेब" },
-  { key: "corn", emoji: "🌽", en: "Corn", hi: "मक्का" },
-  { key: "grape", emoji: "🍇", en: "Grape", hi: "अंगूर" },
-  { key: "potato", emoji: "🥔", en: "Potato", hi: "आलू" },
-  { key: "tomato", emoji: "🍅", en: "Tomato", hi: "टमाटर" },
-  { key: "pepper", emoji: "🌶️", en: "Pepper", hi: "मिर्च" },
-  { key: "cherry", emoji: "🍒", en: "Cherry", hi: "चेरी" },
-  { key: "peach", emoji: "🍑", en: "Peach", hi: "आड़ू" },
-  { key: "strawberry", emoji: "🍓", en: "Strawberry", hi: "स्ट्रॉबेरी" },
-  { key: "orange", emoji: "🍊", en: "Orange", hi: "संतरा" },
-];
+const TRANSLATIONS: Record<string, any> = {
+  en: {
+    heroTag: "Next-Gen Crop Protection",
+    heroTitle: "Save Your Crops with Precision AI",
+    heroDesc: "Experience the future of farming. Detect 38+ crop diseases instantly using our state-of-the-art vision models. Expert treatment plans at your fingertips.",
+    startBtn: "Start Scanning",
+    createBtn: "Create Account",
+    trustedBy: "Trusted by 10,000+ farmers worldwide",
+    featuresTitle: "Built for Visual Intelligence",
+    featuresDesc: "Powerful features designed to give your crops the care they deserve.",
+    feature1Title: "Instant AI Diagnosis",
+    feature1Desc: "Scan any leaf and get 98% accurate results within seconds.",
+    feature2Title: "Treatment History",
+    feature2Desc: "Keep track of all your scans and progress in one secure place.",
+    feature3Title: "Expert Advice",
+    feature3Desc: "Get both organic and chemical treatment plans tailored for your crop.",
+    ctaTitle: "Ready to Protect Your Harvest?",
+    ctaDesc: "Join thousands of farmers using Leaf Scan to grow healthier, more productive crops.",
+    ctaBtn: "Get Started for Free",
+    myScans: "My Scans",
+    logout: "Logout",
+    login: "Log In",
+    signup: "Get Started"
+  },
+  hi: {
+    heroTag: "अगली पीढ़ी का फसल संरक्षण",
+    heroTitle: "सटीक AI के साथ अपनी फसलें बचाएं",
+    heroDesc: "खेती के भविष्य का अनुभव करें। हमारे अत्याधुनिक विज़न मॉडल का उपयोग करके तुरंत 38+ फसल रोगों का पता लगाएं। विशेषज्ञ उपचार योजनाएं आपकी उंगलियों पर।",
+    startBtn: "स्कैन शुरू करें",
+    createBtn: "खाता बनाएं",
+    trustedBy: "दुनिया भर के 10,000+ किसानों द्वारा भरोसा किया गया",
+    featuresTitle: "दृश्य बुद्धिमत्ता के लिए निर्मित",
+    featuresDesc: "आपकी फसलों को वह देखभाल देने के लिए डिज़ाइन की गई शक्तिशाली विशेषताएं जिनके वे हकदार हैं।",
+    feature1Title: "तत्काल AI निदान",
+    feature1Desc: "किसी भी पत्ते को स्कैन करें और सेकंड के भीतर 98% सटीक परिणाम प्राप्त करें।",
+    feature2Title: "उपचार इतिहास",
+    feature2Desc: "अपने सभी स्कैन और प्रगति को एक सुरक्षित स्थान पर ट्रैक करें।",
+    feature3Title: "विशेषज्ञ सलाह",
+    feature3Desc: "अपनी फसल के लिए तैयार जैविक और रासायनिक दोनों उपचार योजनाएं प्राप्त करें।",
+    ctaTitle: "क्या आप अपनी फसल की रक्षा के लिए तैयार हैं?",
+    ctaDesc: "स्वस्थ, अधिक उत्पादक फसलें उगाने के लिए लीफ स्कैन का उपयोग करने वाले हजारों किसानों में शामिल हों।",
+    ctaBtn: "मुफ्त में शुरू करें",
+    myScans: "मेरे स्कैन",
+    logout: "लॉगआउट",
+    login: "लॉग इन",
+    signup: "शुरू करें"
+  }
+};
 
-const FEATURES = [
+const FEATURES = (t: any) => [
   { 
-    icon: <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>, 
-    title: "AI Detection", 
-    desc: "38 disease classes with 94%+ accuracy" 
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 16V8C21 6.89543 20.1046 6 19 6H5C3.89543 6 3 6.89543 3 8V16C3 17.1046 3.89543 18 5 18H19C20.1046 18 21 17.1046 21 16Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M7 10L12 14L17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ), 
+    title: t.feature1Title, 
+    desc: t.feature1Desc 
   },
   { 
-    icon: <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>, 
-    title: "Smart Treatment", 
-    desc: "Chemical, organic & prevention advice" 
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 8V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ), 
+    title: t.feature2Title, 
+    desc: t.feature2Desc 
   },
   { 
-    icon: <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>, 
-    title: "Voice Output", 
-    desc: "Listen to advice in Hindi & regional" 
-  },
-  { 
-    icon: <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" /></svg>, 
-    title: "Works Offline", 
-    desc: "PWA — no internet needed" 
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1Enc 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ), 
+    title: t.feature3Title, 
+    desc: t.feature3Desc 
   },
 ];
 
 export default function HomePage() {
-  const [isVisible, setIsVisible] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [lang, setLang] = useState("en");
 
   useEffect(() => {
-    setIsVisible(true);
+    setMounted(true);
+    const savedLang = localStorage.getItem("leaf_scan_lang") || "en";
+    setLang(savedLang);
     const checkAuth = () => setIsAuth(!!localStorage.getItem("kisan_token"));
     checkAuth();
     window.addEventListener("auth-change", checkAuth);
     return () => window.removeEventListener("auth-change", checkAuth);
   }, []);
 
+  const toggleLang = () => {
+    const newLang = lang === "en" ? "hi" : "en";
+    setLang(newLang);
+    localStorage.setItem("leaf_scan_lang", newLang);
+    window.dispatchEvent(new Event("lang-change"));
+  };
+
+  if (!mounted) return null;
+
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+
   return (
-    <main className="min-h-dvh" style={{ background: "var(--bg)" }}>
-      {/* ── Hero ────────────────────────────────────────────── */}
-      <section
-        className="relative overflow-hidden px-4 pt-8 pb-12"
-        style={{
-          background: "linear-gradient(135deg, #14532d 0%, #166534 40%, #15803d 100%)",
-          minHeight: "60dvh",
-        }}
-      >
-        {/* Decorative circles */}
-        <div
-          className="absolute rounded-full opacity-10 animate-float"
-          style={{ width: 300, height: 300, background: "#86efac", top: -80, right: -60, borderRadius: "50%" }}
-        />
-        <div
-          className="absolute rounded-full opacity-10"
-          style={{
-            width: 200,
-            height: 200,
-            background: "#86efac",
-            bottom: -40,
-            left: -40,
-            borderRadius: "50%",
-            animation: "float 4s ease-in-out infinite 1s",
-          }}
-        />
-
-        <div className={`max-w-lg mx-auto text-center relative z-10 ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}>
-          {/* Logo & Nav */}
-          <nav className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-2 text-white">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-              <span className="font-bold text-lg">Kisan Sathi</span>
-            </div>
-            <div className="flex gap-2">
-              {isAuth ? (
-                <>
-                  <Link href="/history">
-                    <button className="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 transition">
-                      History
-                    </button>
-                  </Link>
-                  <button 
-                    onClick={() => {
-                      localStorage.removeItem("kisan_token");
-                      setIsAuth(false);
-                      window.dispatchEvent(new Event("auth-change"));
-                    }}
-                    className="px-3 py-1 rounded-full text-sm font-medium text-white/70 hover:bg-white/10 transition"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login">
-                    <button className="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 transition">
-                      Log In
-                    </button>
-                  </Link>
-                  <Link href="/register">
-                    <button className="px-3 py-1 rounded-full text-sm font-medium text-white/70 hover:bg-white/10 transition">
-                      Sign Up
-                    </button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </nav>
-
-          {/* Hero Content */}
-          <div className="mt-12 mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight mb-3">
-              अपनी फसल की जांच करें
-            </h1>
-            <p className="text-lg text-green-100/90 mb-2">Check Your Crop Health</p>
-            <p className="text-sm text-green-200/70 max-w-xs mx-auto">
-              Point your camera at a leaf. Get instant disease diagnosis and treatment advice in your language.
-            </p>
+    <main className="min-h-screen mesh-bg selection:bg-emerald-200">
+      {/* ── Navbar ────────────────────────────────────────────────── */}
+      <nav className="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center glass border-b-0 rounded-none bg-white/40">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 17L12 22L22 17" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 12L12 17L22 12" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-
-          {/* CTA Button */}
-          <Link href="/scan">
-            <button
-              id="scan-button"
-              className="btn-primary text-lg px-10 py-4 animate-pulse-glow"
-              style={{ fontSize: "1.1rem" }}
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg> Scan Any Crop Now
-            </button>
-          </Link>
+          <span className="font-extrabold text-xl tracking-tight text-slate-900">LEAF<span className="text-emerald-600">SCAN</span></span>
         </div>
-      </section>
 
-      {/* ── Features ───────────────────────────────────────── */}
-      <section className="px-4 py-10 max-w-lg mx-auto">
-        <div className={`grid grid-cols-2 gap-3 stagger-children ${isVisible ? "" : "opacity-0"}`}>
-          {FEATURES.map((f) => (
-            <div key={f.title} className="glass-card p-4 text-center">
-              <div className="mb-3 flex justify-center text-[var(--primary)]">{f.icon}</div>
-              <h3 className="font-semibold text-sm" style={{ color: "var(--text)" }}>{f.title}</h3>
-              <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>{f.desc}</p>
+        <div className="flex gap-4 items-center">
+          <button 
+            onClick={toggleLang}
+            className="w-10 h-10 rounded-xl glass border-emerald-100 text-emerald-700 font-black text-xs flex items-center justify-center hover:bg-emerald-50 transition-all"
+          >
+            {lang === "en" ? "HI" : "EN"}
+          </button>
+          
+          {isAuth ? (
+            <div className="flex gap-3">
+              <Link href="/history">
+                <button className="px-5 py-2.5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-md">
+                  {t.myScans}
+                </button>
+              </Link>
+              <button 
+                onClick={() => {
+                  localStorage.removeItem("kisan_token");
+                  setIsAuth(false);
+                  window.dispatchEvent(new Event("auth-change"));
+                }}
+                className="px-5 py-2.5 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-100 transition-all"
+              >
+                {t.logout}
+              </button>
             </div>
-          ))}
+          ) : (
+            <>
+              <Link href="/login">
+                <button className="px-5 py-2.5 rounded-xl font-bold text-sm text-slate-700 hover:text-emerald-600 transition-all">
+                  {t.login}
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="px-6 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-md">
+                  {t.signup}
+                </button>
+              </Link>
+            </>
+          )}
         </div>
-      </section>
+      </nav>
 
-      {/* ── Supported Crops Info ──────────────────────────────── */}
-      <section className="px-4 pb-10 max-w-lg mx-auto">
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: "var(--primary-dark)" }}>
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          Detects 38+ Diseases
-        </h2>
-        <div className="glass-card p-4">
-          <p className="text-sm mb-3" style={{ color: "var(--text-secondary)" }}>Our AI is trained to detect diseases across various crops including:</p>
-          <div className="flex flex-wrap gap-2">
-            {CROPS.map((c) => (
-              <span key={c.key} className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium" style={{ color: "var(--text)" }}>
-                {c.en}
+      {/* ── Hero Section ──────────────────────────────────────────── */}
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+          <div className="flex-1 text-center lg:text-left space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-800 font-bold text-sm animate-fade-in-up">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-            ))}
-            <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs font-medium">
-              + many more
-            </span>
+              {t.heroTag}
+            </div>
+            
+            <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
+              {t.heroTitle.split("Precision AI")[0]} <span className="text-gradient">Precision AI</span>
+            </h1>
+            
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              {t.heroDesc}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+              <Link href="/scan">
+                <button className="btn-premium group w-full sm:w-auto">
+                  {t.startBtn}
+                  <svg className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="btn-outline w-full sm:w-auto bg-white/50 backdrop-blur-sm">
+                  {t.createBtn}
+                </button>
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-6 justify-center lg:justify-start pt-8">
+              <div className="flex -space-x-3">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200" />
+                ))}
+              </div>
+              <p className="text-sm font-medium text-slate-500">{t.trustedBy}</p>
+            </div>
+          </div>
+
+          <div className="flex-1 relative animate-float">
+            <div className="relative z-10 glass p-4 rotate-3 hover:rotate-0 transition-all duration-700">
+               <div className="rounded-2xl overflow-hidden bg-slate-100 aspect-square lg:aspect-[4/5] relative">
+                  {/* Mock Interface */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 to-transparent flex flex-col justify-end p-8 text-white">
+                    <div className="glass-dark p-6 space-y-3">
+                       <div className="flex justify-between items-center">
+                          <span className="font-bold">{lang === "en" ? "Tomato Blight" : "टमाटर का अगेती झुलसा"}</span>
+                          <span className="text-emerald-400 font-bold text-sm">98.2% {lang === "en" ? "Accuracy" : "सटीकता"}</span>
+                       </div>
+                       <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+                          <div className="h-full bg-emerald-500 w-[98%]" />
+                       </div>
+                       <p className="text-xs text-white/70">{lang === "en" ? "Diagnosis complete. View treatment plan now." : "निदान पूरा हुआ। अब उपचार योजना देखें।"}</p>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-20">
+                     <svg className="w-32 h-32 text-emerald-600" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                     </svg>
+                  </div>
+               </div>
+            </div>
+            {/* Background elements */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-lime-400/20 rounded-full blur-3xl" />
           </div>
         </div>
       </section>
 
-      {/* ── Quick Actions ──────────────────────────────────── */}
-      <section className="px-4 pb-12 max-w-lg mx-auto">
-        <div className="flex gap-3">
-          <Link href="/scan" className="flex-1">
-            <button className="btn-primary w-full flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-              Scan Now
-            </button>
-          </Link>
-          <Link href="/history" className="flex-1">
-            <button className="btn-secondary w-full flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-              History
-            </button>
-          </Link>
+      {/* ── Features Section ──────────────────────────────────────── */}
+      <section className="py-24 px-6 bg-white/50 relative border-t border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-4xl font-extrabold text-slate-900">{t.featuresTitle}</h2>
+            <p className="text-slate-600 max-w-xl mx-auto text-lg">{t.featuresDesc}</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 stagger-children">
+            {FEATURES(t).map((feature, i) => (
+              <div key={i} className="glass p-10 card-hover group">
+                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-500">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────────────── */}
-      <footer className="text-center py-6 text-xs" style={{ color: "var(--text-secondary)" }}>
-        <p>Kisan Sathi — AI for Indian Agriculture 🇮🇳</p>
-        <p className="mt-1">Powered by Grok + Gemini + PyTorch</p>
+      {/* ── CTA Section ───────────────────────────────────────────── */}
+      <section className="py-24 px-6 relative">
+        <div className="max-w-5xl mx-auto glass p-12 lg:p-20 bg-slate-900 text-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl -mr-48 -mt-48" />
+          <div className="relative z-10 flex flex-col items-center text-center space-y-8">
+            <h2 className="text-4xl lg:text-5xl font-extrabold leading-tight">{t.ctaTitle}</h2>
+            <p className="text-slate-400 text-lg max-w-xl">{t.ctaDesc}</p>
+            <Link href="/scan">
+              <button className="btn-premium px-12 py-5 text-lg">
+                {t.ctaBtn}
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ────────────────────────────────────────────────── */}
+      <footer className="py-12 px-6 border-t border-slate-200 bg-white">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-2">
+            <span className="font-extrabold text-lg tracking-tight text-slate-900">LEAF<span className="text-emerald-600">SCAN</span></span>
+          </div>
+          <p className="text-slate-500 text-sm font-medium">© 2026 Leaf Scan AI. All rights reserved.</p>
+          <div className="flex gap-6 text-slate-400">
+             <Link href="#" className="hover:text-emerald-600 transition-colors">Twitter</Link>
+             <Link href="#" className="hover:text-emerald-600 transition-colors">Privacy</Link>
+             <Link href="#" className="hover:text-emerald-600 transition-colors">Terms</Link>
+          </div>
+        </div>
       </footer>
     </main>
   );

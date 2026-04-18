@@ -109,6 +109,7 @@ async def detect_disease(
         "severity": result["severity"],
         "top_predictions": result["predictions"],
         "image_filename": file.filename,
+        "image_data": image_bytes,  # Store as binary in Mongo
         "created_at": datetime.now(timezone.utc)
     }
     
