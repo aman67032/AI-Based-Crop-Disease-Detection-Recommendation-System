@@ -270,30 +270,29 @@ export default function ProfilePage() {
                   const pointCount = scan.coordinates?.length || 0;
 
                   return (
-                    <div
-                      key={scan.id}
-                      className="glass p-6 bg-white/70 card-hover space-y-3 border-l-4 border-l-cyan-500"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-cyan-100 text-cyan-700">
-                          🛰️ NDVI Scan
-                        </span>
-                        <span className="text-xs text-slate-400 font-medium">{date}</span>
+                    <Link href={`/farm?scan_id=${scan.id}`} key={scan.id}>
+                      <div className="glass p-6 bg-white/70 card-hover space-y-3 border-l-4 border-l-cyan-500 cursor-pointer hover:border-cyan-400 transition-colors">
+                        <div className="flex items-center justify-between">
+                          <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-cyan-100 text-cyan-700">
+                            🛰️ NDVI Scan
+                          </span>
+                          <span className="text-xs text-slate-400 font-medium">{date}</span>
+                        </div>
+                        <h3 className="text-lg font-black text-slate-900">
+                          {scan.location_name || `Farm Scan (${pointCount} points)`}
+                        </h3>
+                        {scan.analysis && (
+                          <p className="text-sm text-slate-600 font-medium leading-relaxed line-clamp-3">
+                            {scan.analysis}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400 font-medium">
+                            📍 {pointCount} boundary points
+                          </span>
+                        </div>
                       </div>
-                      <h3 className="text-lg font-black text-slate-900">
-                        {scan.location_name || `Farm Scan (${pointCount} points)`}
-                      </h3>
-                      {scan.analysis && (
-                        <p className="text-sm text-slate-600 font-medium leading-relaxed line-clamp-3">
-                          {scan.analysis}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-400 font-medium">
-                          📍 {pointCount} boundary points
-                        </span>
-                      </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

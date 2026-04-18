@@ -43,7 +43,23 @@ export default function FarmMapPage() {
     const token = getToken();
     setIsLoggedIn(!!token);
     if (token) {
-      getFarmScans().then(data => setFarmHistory(data.scans || [])).catch(() => {});
+      getFarmScans().then(data => {
+        const scans = data.scans || [];
+        setFarmHistory(scans);
+        
+        // Auto-load scan if redirected from profile page
+        const params = new URLSearchParams(window.location.search);
+        const scanId = params.get("scan_id");
+        if (scanId) {
+          const selectedScan = scans.find((s: any) => s.id === scanId);
+          if (selectedScan) {
+            setPolygon(selectedScan.coordinates);
+            setNdviUrl(selectedScan.ndvi_url);
+            setAiAnalysis(selectedScan.analysis);
+            setSaved(true);
+          }
+        }
+      }).catch(() => {});
     }
   }, []);
 
