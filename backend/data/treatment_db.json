@@ -1,0 +1,210 @@
+{
+  "Apple___Apple_scab": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L or Captan 50% WP @ 2g/L",
+    "organic": "Neem oil 3% spray + Bordeaux mixture",
+    "prevention": "Remove fallen leaves, use resistant varieties, prune for air circulation",
+    "urgency": "MEDIUM",
+    "description_en": "Fungal infection causing olive-green to brown velvety spots on leaves",
+    "description_hi": "पत्तियों पर हरे-भूरे मखमली धब्बे वाला फफूंद संक्रमण"
+  },
+  "Apple___Black_rot": {
+    "chemical": "Captan 50% WP @ 2g/L or Thiophanate-methyl 70% WP",
+    "organic": "Copper hydroxide spray + removal of mummified fruits",
+    "prevention": "Remove dead wood, mummified fruits, maintain orchard sanitation",
+    "urgency": "HIGH",
+    "description_en": "Fungal disease causing black circular lesions on fruit and leaf spots",
+    "description_hi": "फलों पर काले गोल घाव और पत्ती धब्बे वाला फफूंद रोग"
+  },
+  "Apple___Cedar_apple_rust": {
+    "chemical": "Myclobutanil 10% WP @ 1g/L or Triadimefon",
+    "organic": "Remove nearby juniper/cedar trees, sulfur spray",
+    "prevention": "Plant resistant varieties, remove juniper hosts within 2 miles",
+    "urgency": "MEDIUM",
+    "description_en": "Rust fungus causing bright orange spots on apple leaves",
+    "description_hi": "सेब की पत्तियों पर चमकीले नारंगी धब्बे वाला जंग फफूंद"
+  },
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "chemical": "Azoxystrobin 23% SC @ 1ml/L or Propiconazole 25% EC",
+    "organic": "Crop rotation with non-host crops, Trichoderma application",
+    "prevention": "Avoid continuous corn planting, use resistant hybrids, till crop residue",
+    "urgency": "MEDIUM",
+    "description_en": "Rectangular gray lesions between leaf veins of corn",
+    "description_hi": "मक्का की पत्ती नसों के बीच आयताकार धूसर घाव"
+  },
+  "Corn_(maize)___Common_rust_": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L or Propiconazole 25% EC @ 1ml/L",
+    "organic": "Neem oil spray, use tolerant varieties",
+    "prevention": "Plant early, use rust-resistant hybrids, avoid late planting",
+    "urgency": "MEDIUM",
+    "description_en": "Reddish-brown pustules on both leaf surfaces of corn",
+    "description_hi": "मक्का की पत्तियों के दोनों ओर लाल-भूरे दाने"
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "chemical": "Azoxystrobin 23% SC or Propiconazole 25% EC @ 1ml/L",
+    "organic": "Trichoderma viride application, crop rotation",
+    "prevention": "Use resistant hybrids, deep plowing to bury residue",
+    "urgency": "HIGH",
+    "description_en": "Long elliptical gray-green lesions on corn leaves",
+    "description_hi": "मक्का की पत्तियों पर लंबे अंडाकार धूसर-हरे घाव"
+  },
+  "Grape___Black_rot": {
+    "chemical": "Myclobutanil 10% WP or Mancozeb 75% WP @ 2.5g/L",
+    "organic": "Remove mummified berries, copper spray before bloom",
+    "prevention": "Good canopy management, remove infected parts, proper spacing",
+    "urgency": "HIGH",
+    "description_en": "Brown circular spots on leaves, black shriveled berries",
+    "description_hi": "पत्तियों पर भूरे गोल धब्बे, काली सिकुड़ी हुई बेरियाँ"
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "chemical": "No effective chemical — manage with surgery and nutrition",
+    "organic": "Trunk surgery to remove infected wood, apply wound paste",
+    "prevention": "Avoid pruning in wet weather, protect pruning wounds",
+    "urgency": "HIGH",
+    "description_en": "Tiger stripe pattern on leaves, dark spots on berries",
+    "description_hi": "पत्तियों पर बाघ की धारी पैटर्न, बेरियों पर काले धब्बे"
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L + Carbendazim 50% WP",
+    "organic": "Bordeaux mixture spray, remove fallen leaves",
+    "prevention": "Proper vine training, avoid overcrowding, good drainage",
+    "urgency": "MEDIUM",
+    "description_en": "Irregular brown spots with yellow halo on grape leaves",
+    "description_hi": "अंगूर की पत्तियों पर पीले किनारे वाले अनियमित भूरे धब्बे"
+  },
+  "Orange___Haunglongbing_(Citrus_greening)": {
+    "chemical": "Imidacloprid 17.8% SL for psyllid vector control",
+    "organic": "Remove infected trees, control Asian citrus psyllid with neem",
+    "prevention": "Use disease-free nursery stock, manage psyllid vector aggressively",
+    "urgency": "HIGH",
+    "description_en": "Asymmetric yellowing of leaves, lopsided bitter fruits",
+    "description_hi": "पत्तियों का असमान पीलापन, टेढ़े कड़वे फल"
+  },
+  "Peach___Bacterial_spot": {
+    "chemical": "Copper oxychloride 50% WP @ 3g/L + Streptomycin",
+    "organic": "Copper hydroxide spray before rainy season",
+    "prevention": "Avoid overhead irrigation, plant resistant varieties",
+    "urgency": "MEDIUM",
+    "description_en": "Small dark water-soaked spots on peach leaves",
+    "description_hi": "आड़ू की पत्तियों पर छोटे गहरे पानीदार धब्बे"
+  },
+  "Pepper,_bell___Bacterial_spot": {
+    "chemical": "Copper hydroxide 77% WP @ 2g/L + Mancozeb",
+    "organic": "Neem oil 3% + Pseudomonas fluorescens bio-agent",
+    "prevention": "Use disease-free seeds, avoid working in wet fields, crop rotation",
+    "urgency": "MEDIUM",
+    "description_en": "Small dark raised spots on pepper leaves and fruits",
+    "description_hi": "मिर्च की पत्तियों और फलों पर छोटे गहरे उभरे धब्बे"
+  },
+  "Potato___Early_blight": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP",
+    "organic": "Trichoderma harzianum application, neem cake in soil",
+    "prevention": "Crop rotation with non-solanaceous crops, remove infected debris",
+    "urgency": "MEDIUM",
+    "description_en": "Concentric ring pattern (target spots) on lower potato leaves",
+    "description_hi": "आलू की निचली पत्तियों पर गोल छल्ले का पैटर्न (लक्ष्य धब्बे)"
+  },
+  "Potato___Late_blight": {
+    "chemical": "Metalaxyl 8% + Mancozeb 64% WP @ 2.5g/L",
+    "organic": "Bordeaux mixture 1%, remove infected plants immediately",
+    "prevention": "Avoid excess irrigation, use certified seed tubers, destroy volunteer plants",
+    "urgency": "HIGH",
+    "description_en": "Water-soaked dark lesions with white mold on leaf underside",
+    "description_hi": "पत्ती के नीचे सफेद फफूंद के साथ पानीदार गहरे घाव"
+  },
+  "Squash___Powdery_mildew": {
+    "chemical": "Hexaconazole 5% EC @ 1ml/L or Sulfur 80% WP @ 3g/L",
+    "organic": "Milk spray (1:9 ratio), potassium bicarbonate",
+    "prevention": "Good air circulation, avoid overhead watering, resistant varieties",
+    "urgency": "MEDIUM",
+    "description_en": "White powdery coating on upper leaf surfaces",
+    "description_hi": "पत्तियों की ऊपरी सतह पर सफेद चूर्णी परत"
+  },
+  "Strawberry___Leaf_scorch": {
+    "chemical": "Captan 50% WP @ 2g/L or Chlorothalonil",
+    "organic": "Remove infected leaves, mulching, Trichoderma application",
+    "prevention": "Good air circulation, drip irrigation, avoid overhead watering",
+    "urgency": "MEDIUM",
+    "description_en": "Irregular purple-red spots that enlarge and cause leaf edges to curl",
+    "description_hi": "अनियमित बैंगनी-लाल धब्बे जो बढ़कर पत्ती किनारों को मोड़ते हैं"
+  },
+  "Tomato___Bacterial_spot": {
+    "chemical": "Copper oxychloride 50% WP @ 3g/L + Streptocycline 0.01%",
+    "organic": "Neem oil 3% spray + Pseudomonas fluorescens",
+    "prevention": "Use disease-free seeds, crop rotation, avoid overhead irrigation",
+    "urgency": "MEDIUM",
+    "description_en": "Small dark water-soaked spots on tomato leaves and fruits",
+    "description_hi": "टमाटर की पत्तियों और फलों पर छोटे गहरे पानीदार धब्बे"
+  },
+  "Tomato___Early_blight": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L or Chlorothalonil 75% WP",
+    "organic": "Trichoderma harzianum + neem oil spray",
+    "prevention": "Crop rotation, remove lower infected leaves, proper staking",
+    "urgency": "MEDIUM",
+    "description_en": "Concentric ring pattern on older tomato leaves (target spots)",
+    "description_hi": "टमाटर की पुरानी पत्तियों पर गोल छल्ले का पैटर्न"
+  },
+  "Tomato___Late_blight": {
+    "chemical": "Metalaxyl 8% + Mancozeb 64% WP @ 2.5g/L immediately",
+    "organic": "Bordeaux mixture 1%, destroy infected plants",
+    "prevention": "Avoid waterlogging, use resistant varieties, spray preventively in rainy season",
+    "urgency": "HIGH",
+    "description_en": "Large irregular water-soaked lesions with white mold underneath",
+    "description_hi": "नीचे सफेद फफूंद के साथ बड़े अनियमित पानीदार घाव"
+  },
+  "Tomato___Leaf_Mold": {
+    "chemical": "Mancozeb 75% WP @ 2.5g/L or Chlorothalonil",
+    "organic": "Improve ventilation, reduce humidity, Trichoderma spray",
+    "prevention": "Proper spacing, ventilation in greenhouses, avoid leaf wetness",
+    "urgency": "MEDIUM",
+    "description_en": "Yellow spots on upper leaf, olive-green mold underneath",
+    "description_hi": "ऊपर पीले धब्बे, नीचे जैतून-हरी फफूंद"
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "chemical": "Mancozeb 75% WP or Chlorothalonil 75% WP @ 2g/L",
+    "organic": "Copper spray, remove lower infected leaves, mulching",
+    "prevention": "Crop rotation, remove debris, avoid overhead irrigation",
+    "urgency": "MEDIUM",
+    "description_en": "Small circular spots with gray centers and dark borders on lower leaves",
+    "description_hi": "निचली पत्तियों पर धूसर केंद्र और गहरे किनारों वाले छोटे गोल धब्बे"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "chemical": "Dicofol 18.5% EC @ 2.5ml/L or Abamectin 1.8% EC",
+    "organic": "Neem oil spray, release predatory mites (Phytoseiulus)",
+    "prevention": "Avoid dusty conditions, maintain humidity, intercrop with coriander",
+    "urgency": "MEDIUM",
+    "description_en": "Tiny yellow dots on leaves, fine webbing on leaf underside",
+    "description_hi": "पत्तियों पर छोटे पीले बिंदु, नीचे महीन जाले"
+  },
+  "Tomato___Target_Spot": {
+    "chemical": "Azoxystrobin 23% SC @ 1ml/L or Chlorothalonil",
+    "organic": "Remove infected leaves, improve air circulation",
+    "prevention": "Proper spacing, staking, remove lower leaves, crop rotation",
+    "urgency": "MEDIUM",
+    "description_en": "Concentric ring spots on tomato leaves, stems and fruits",
+    "description_hi": "टमाटर की पत्तियों, तनों और फलों पर गोल छल्ले वाले धब्बे"
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "chemical": "Imidacloprid 17.8% SL @ 0.3ml/L for whitefly vector control",
+    "organic": "Yellow sticky traps, neem oil spray for whitefly control",
+    "prevention": "Use virus-resistant varieties, control whitefly population, remove infected plants",
+    "urgency": "HIGH",
+    "description_en": "Upward curling of leaves, stunted growth, yellow leaf margins",
+    "description_hi": "पत्तियों का ऊपर की ओर मुड़ना, बौना विकास, पीले पत्ती किनारे"
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "chemical": "No chemical cure — control through sanitation",
+    "organic": "Remove infected plants, milk spray (10%) as preventive",
+    "prevention": "Use virus-free seeds, sanitize tools, wash hands with milk before handling",
+    "urgency": "HIGH",
+    "description_en": "Mosaic pattern of light/dark green on leaves, distorted growth",
+    "description_hi": "पत्तियों पर हल्के/गहरे हरे का मोजेक पैटर्न, विकृत विकास"
+  },
+  "Cherry_(including_sour)___Powdery_mildew": {
+    "chemical": "Hexaconazole 5% EC @ 1ml/L or Sulfur 80% WP",
+    "organic": "Potassium bicarbonate spray, neem oil",
+    "prevention": "Good air circulation, avoid overcrowding, prune properly",
+    "urgency": "MEDIUM",
+    "description_en": "White powdery fungal growth on cherry leaves",
+    "description_hi": "चेरी की पत्तियों पर सफेद चूर्णी फफूंद"
+  }
+}

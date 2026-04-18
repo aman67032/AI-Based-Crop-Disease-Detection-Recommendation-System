@@ -1,0 +1,45 @@
+"""KisanAI Configuration — Environment variables and app settings."""
+
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+
+
+class Settings(BaseSettings):
+    """Application settings loaded from .env file."""
+
+    # PostgreSQL (Neon)
+    DATABASE_URL: str = "postgresql+asyncpg://localhost/kisanai"
+
+    # Grok API (xAI) — OpenAI-compatible
+    GROK_API_KEY: str = ""
+    GROK_MODEL: str = "grok-3-mini"
+    GROK_BASE_URL: str = "https://api.x.ai/v1"
+
+    # Gemini API (Google AI Studio)
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+
+    # Ollama (Local LLM)
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "gemma4"
+
+    # JWT Auth
+    JWT_SECRET: str = "change_me_in_production"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRATION_MINUTES: int = 1440  # 24 hours
+
+    # App
+    APP_NAME: str = "KisanAI"
+    DEBUG: bool = True
+    FRONTEND_URL: str = "http://localhost:3000"
+    BACKEND_URL: str = "http://localhost:8000"
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+
+@lru_cache()
+def get_settings() -> Settings:
+    """Cached settings instance — reads .env once."""
+    return Settings()
