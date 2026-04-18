@@ -43,7 +43,12 @@ app = FastAPI(
 # CORS — allow frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL, "http://localhost:3000", "http://localhost:5173"],
+    allow_origins=[
+        settings.FRONTEND_URL, 
+        "https://leafscan-six.vercel.app",
+        "http://localhost:3000", 
+        "http://localhost:5173"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
