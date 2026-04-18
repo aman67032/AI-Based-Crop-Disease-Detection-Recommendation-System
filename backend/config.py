@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     FRONTEND_URL: str = "http://localhost:3000"
     BACKEND_URL: str = "http://localhost:8000"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
 
     class Config:
         env_file = ".env"
