@@ -218,11 +218,11 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Vision Re-Analysis Section */}
         {!visionAnalysis && (
-          <div className="glass p-8 bg-slate-900 text-white space-y-4 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+          <div className="p-8 rounded-3xl space-y-4 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)]" style={{ background: '#0f172a' }}>
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="space-y-2">
                 <h3 className="text-xl font-black text-emerald-400">{t.visionTitle}</h3>
-                <p className="text-slate-400 text-sm max-w-lg">{t.visionDesc}</p>
+                <p className="text-sm max-w-lg" style={{ color: '#94a3b8' }}>{t.visionDesc}</p>
               </div>
               <button 
                 onClick={handleVisionCheck}
@@ -234,7 +234,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
               </button>
             </div>
             {visionError && (
-              <div className="mt-4 p-4 bg-red-500/20 border border-red-400/50 rounded-xl text-red-200 text-sm font-bold">
+              <div className="mt-4 p-4 rounded-xl text-sm font-bold" style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.5)', color: '#fca5a5' }}>
                 ⚠️ {visionError}
               </div>
             )}
@@ -242,14 +242,14 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         )}
 
         {visionAnalysis && (
-          <div className="glass p-8 bg-emerald-600 text-white space-y-4 animate-fade-in">
+          <div className="p-8 rounded-3xl space-y-4 animate-fade-in" style={{ background: '#065f46' }}>
              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">✨</div>
-                <h3 className="text-xl font-black">{t.correctionApplied}</h3>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(255,255,255,0.2)' }}>✨</div>
+                <h3 className="text-xl font-black text-white">{t.correctionApplied}</h3>
              </div>
-             <p className="text-emerald-50 text-lg leading-relaxed whitespace-pre-wrap">{visionAnalysis}</p>
+             <p className="text-lg leading-relaxed whitespace-pre-wrap" style={{ color: '#d1fae5' }}>{visionAnalysis}</p>
              <div className="flex gap-4">
-                <span className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-widest">Source: {visionSource.replace("_", " ")}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-white" style={{ background: 'rgba(255,255,255,0.2)' }}>Source: {visionSource.replace("_", " ")}</span>
              </div>
           </div>
         )}
@@ -295,15 +295,15 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
 
            {/* AI Full Description */}
            {data.recommendation?.text && (
-             <div className="glass p-10 space-y-4 bg-slate-900 text-white shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/10 rounded-full blur-3xl -mr-32 -mt-32" />
-                <h3 className="text-xl font-black flex items-center gap-3">
+             <div className="p-10 rounded-3xl space-y-4 shadow-2xl relative overflow-hidden" style={{ background: '#0f172a' }}>
+                <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32" style={{ background: 'rgba(5,150,105,0.1)' }} />
+                <h3 className="text-xl font-black flex items-center gap-3 text-white">
                    <span className="text-emerald-400">AI</span> {t.advisory}
                 </h3>
-                <p className="text-slate-300 leading-relaxed text-lg italic">
+                <p className="leading-relaxed text-lg italic" style={{ color: '#cbd5e1' }}>
                   "{data.recommendation.text}"
                 </p>
-                <div className="flex items-center gap-2 text-xs font-black text-slate-500 tracking-widest uppercase">
+                <div className="flex items-center gap-2 text-xs font-black tracking-widest uppercase" style={{ color: '#64748b' }}>
                    Source: <span className="text-emerald-500">{data.recommendation.source?.toUpperCase()}</span> • Verified by Leaf Scan AI
                 </div>
              </div>
