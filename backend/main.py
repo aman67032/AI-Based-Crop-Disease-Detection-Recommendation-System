@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from config import get_settings
-from database.postgres import init_db
+from database.mongo import init_db
 from ml.model_inference import load_model
 from routes import detect, history, recommend, auth
 import logging
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     """Startup: init DB + load ML model. Shutdown: cleanup."""
     logger.info("Starting Kisan Sathi backend...")
 
-    # Initialize PostgreSQL tables
+    # Initialize MongoDB connection
     await init_db()
 
     # Load PyTorch model (singleton)

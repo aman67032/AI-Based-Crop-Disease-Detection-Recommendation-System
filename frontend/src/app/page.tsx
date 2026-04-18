@@ -41,8 +41,15 @@ const FEATURES = [
 
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => setIsVisible(true), []);
+  useEffect(() => {
+    setIsVisible(true);
+    const checkAuth = () => setIsAuth(!!localStorage.getItem("kisan_token"));
+    checkAuth();
+    window.addEventListener("auth-change", checkAuth);
+    return () => window.removeEventListener("auth-change", checkAuth);
+  }, []);
 
   return (
     <main className="min-h-dvh" style={{ background: "var(--bg)" }}>
@@ -80,12 +87,38 @@ export default function HomePage() {
               <span className="font-bold text-lg">Kisan Sathi</span>
             </div>
             <div className="flex gap-2">
-              <button className="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white backdrop-blur-sm">
-                EN
-              </button>
-              <button className="px-3 py-1 rounded-full text-sm font-medium text-white/70 hover:bg-white/10 transition">
-                हिं
-              </button>
+              {isAuth ? (
+                <>
+                  <Link href="/history">
+                    <button className="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 transition">
+                      History
+                    </button>
+                  </Link>
+                  <button 
+                    onClick={() => {
+                      localStorage.removeItem("kisan_token");
+                      setIsAuth(false);
+                      window.dispatchEvent(new Event("auth-change"));
+                    }}
+                    className="px-3 py-1 rounded-full text-sm font-medium text-white/70 hover:bg-white/10 transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <button className="px-3 py-1 rounded-full text-sm font-semibold bg-white/20 text-white backdrop-blur-sm hover:bg-white/30 transition">
+                      Log In
+                    </button>
+                  </Link>
+                  <Link href="/register">
+                    <button className="px-3 py-1 rounded-full text-sm font-medium text-white/70 hover:bg-white/10 transition">
+                      Sign Up
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
 

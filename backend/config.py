@@ -7,8 +7,8 @@ from functools import lru_cache
 class Settings(BaseSettings):
     """Application settings loaded from .env file."""
 
-    # PostgreSQL (Neon)
-    DATABASE_URL: str = "postgresql+asyncpg://localhost/kisanai"
+    # MongoDB
+    MONGODB_URL: str = "mongodb://localhost:27017"
 
     # Grok API (xAI) — OpenAI-compatible
     GROK_API_KEY: str = ""

@@ -4,6 +4,15 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+export const getToken = () => typeof window !== "undefined" ? localStorage.getItem("kisan_token") : null;
+export const setToken = (token: string) => typeof window !== "undefined" && localStorage.setItem("kisan_token", token);
+export const removeToken = () => typeof window !== "undefined" && localStorage.removeItem("kisan_token");
+
+export const getAuthHeaders = () => {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export interface Detection {
   disease: string;
   disease_key: string;
@@ -35,7 +44,7 @@ export interface Recommendation {
 }
 
 export interface DetectResponse {
-  id: number;
+  id: string;
   detection: Detection;
   predictions: Prediction[];
   recommendation: Recommendation;
@@ -43,7 +52,7 @@ export interface DetectResponse {
 }
 
 export interface HistoryItem {
-  id: number;
+  id: string;
   crop_type: string;
   disease_name: string;
   confidence: number;
@@ -66,6 +75,7 @@ export async function detectDisease(
 
   const res = await fetch(`${API_BASE}/api/detect`, {
     method: "POST",
+    headers: { ...getAuthHeaders() },
     body: formData,
   });
 
@@ -110,7 +120,9 @@ export async function getHistory(
   const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
   if (crop) params.set("crop", crop);
 
-  const res = await fetch(`${API_BASE}/api/history?${params}`);
+  const res = await fetch(`${API_BASE}/api/history?${params}`, {
+    headers: { ...getAuthHeaders() },
+  });
   if (!res.ok) throw new Error("Failed to fetch history");
   return res.json();
 }
@@ -118,8 +130,10 @@ export async function getHistory(
 /**
  * Get single detection detail.
  */
-export async function getDetection(id: number) {
-  const res = await fetch(`${API_BASE}/api/history/${id}`);
+export async function getDetection(id: string) {
+  const res = await fetch(`${API_BASE}/api/history/${id}`, {
+    headers: { ...getAuthHeaders() },
+  });
   if (!res.ok) throw new Error("Detection not found");
   return res.json();
 }
@@ -129,5 +143,34 @@ export async function getDetection(id: number) {
  */
 export async function healthCheck() {
   const res = await fetch(`${API_BASE}/health`);
+  return res.json();
+}
+
+/**
+ * Authentication
+ */
+export async function registerUser(data: Record<string, string>) {
+  const res = await fetch(`${API_BASE}/api/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Registration failed" }));
+    throw new Error(err.detail || "Registration failed");
+  }
+  return res.json();
+}
+
+export async function loginUser(data: Record<string, string>) {
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Login failed" }));
+    throw new Error(err.detail || "Login failed");
+  }
   return res.json();
 }

@@ -21,6 +21,13 @@ export default function HistoryPage() {
   }, []);
 
   async function loadHistory() {
+    const token = typeof window !== "undefined" ? localStorage.getItem("kisan_token") : null;
+    if (!token) {
+      setError("unauthorized");
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = await getHistory(50);
       setDetections(data.detections);
@@ -69,13 +76,33 @@ export default function HistoryPage() {
           </div>
         )}
 
-        {error && (
+        {error && error !== "unauthorized" && (
           <div className="glass-card p-6 text-center">
             <p className="text-4xl mb-3">📡</p>
             <p className="font-medium" style={{ color: "var(--text)" }}>{error}</p>
             <button onClick={loadHistory} className="btn-secondary mt-4 text-sm">
               Retry
             </button>
+          </div>
+        )}
+
+        {error === "unauthorized" && (
+          <div className="glass-card p-8 text-center animate-fade-in-up">
+            <p className="text-5xl mb-4">🔐</p>
+            <h2 className="text-lg font-bold mb-2" style={{ color: "var(--text)" }}>
+              Login Required
+            </h2>
+            <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
+              Please log in to view your scan history and recommendations.
+            </p>
+            <div className="flex gap-3">
+              <Link href="/login" className="flex-1">
+                <button className="btn-primary w-full">Log In</button>
+              </Link>
+              <Link href="/register" className="flex-1">
+                <button className="btn-secondary w-full">Sign Up</button>
+              </Link>
+            </div>
           </div>
         )}
 

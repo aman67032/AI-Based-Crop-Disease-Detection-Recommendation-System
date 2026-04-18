@@ -4,9 +4,8 @@ Receives leaf image → runs CNN → gets AI recommendation → saves to DB.
 """
 
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from database.postgres import get_db, Detection, Recommendation
+from motor.motor_asyncio import AsyncIOMotorDatabase
+from database.mongo import get_db
 from ml.model_inference import predict
 from services import grok_service, gemini_service, ollama_service
 import json
@@ -70,7 +69,7 @@ async def detect_disease(
     file: UploadFile = File(...),
     crop_type: str = Form(""),
     language: str = Form("en"),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_db),
 ):
     """
     Upload a leaf image → get disease detection + treatment recommendation.
@@ -101,33 +100,35 @@ async def detect_disease(
         )
 
     # 4. Save detection to database
-    detection = Detection(
-        crop_type=crop_type or primary["crop"],
-        disease_name=disease_key,
-        confidence=primary["confidence"],
-        severity=result["severity"],
-        top_predictions=result["predictions"],
-        image_filename=file.filename,
-    )
-    db.add(detection)
-    await db.flush()
+    from datetime import datetime, timezone
+    
+    detection_doc = {
+        "crop_type": crop_type or primary["crop"],
+        "disease_name": disease_key,
+        "confidence": primary["confidence"],
+        "severity": result["severity"],
+        "top_predictions": result["predictions"],
+        "image_filename": file.filename,
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    insert_result = await db.detections.insert_one(detection_doc)
+    detection_id = insert_result.inserted_id
 
     # 5. Save recommendation
     if rec_text:
-        recommendation = Recommendation(
-            detection_id=detection.id,
-            treatment_text=rec_text,
-            language=language,
-            source=rec_source,
-        )
-        db.add(recommendation)
-
-    await db.commit()
-    await db.refresh(detection)
+        recommendation_doc = {
+            "detection_id": detection_id,
+            "treatment_text": rec_text,
+            "language": language,
+            "source": rec_source,
+            "created_at": datetime.now(timezone.utc)
+        }
+        await db.recommendations.insert_one(recommendation_doc)
 
     # 6. Build response
     return {
-        "id": detection.id,
+        "id": str(detection_id),
         "detection": {
             "disease": primary["disease"],
             "disease_key": disease_key,
