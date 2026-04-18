@@ -208,3 +208,13 @@ export async function reanalyzeDetection(detectionId: string): Promise<{ analysi
   }
   return res.json();
 }
+
+/**
+ * Fetch disease risk based on weather
+ */
+export async function getDiseaseRisk(lat: number, lon: number, disease: string) {
+  const params = new URLSearchParams({ lat: String(lat), lon: String(lon), disease });
+  const res = await fetch(`${API_BASE}/api/weather/risk?${params.toString()}`);
+  if (!res.ok) throw new Error("Failed to fetch weather risk");
+  return res.json();
+}

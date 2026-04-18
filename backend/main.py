@@ -57,6 +57,8 @@ app.include_router(detect.router)
 app.include_router(history.router)
 app.include_router(recommend.router)
 app.include_router(auth.router)
+from routes import weather
+app.include_router(weather.router)
 
 
 @app.get("/")

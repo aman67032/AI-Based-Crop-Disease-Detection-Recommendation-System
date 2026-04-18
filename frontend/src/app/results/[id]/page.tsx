@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { getDetection, reanalyzeDetection } from "@/lib/api";
+import { getDetection, reanalyzeDetection, getDiseaseRisk } from "@/lib/api";
 import Link from "next/link";
 
 const UI_STRINGS: Record<string, any> = {
@@ -63,6 +63,8 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
   const [visionSource, setVisionSource] = useState<string>("");
   const [visionLoading, setVisionLoading] = useState(false);
   const [visionError, setVisionError] = useState("");
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
 
   useEffect(() => {
     const savedLang = localStorage.getItem("leaf_scan_lang") || "en";
@@ -80,6 +82,36 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
       .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    if (data && data.disease_name) {
+      // Fetch weather based on geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            fetchWeather(position.coords.latitude, position.coords.longitude, data.disease_name);
+          },
+          (err) => {
+            console.warn("Geolocation blocked, using default (Delhi)", err);
+            fetchWeather(28.6139, 77.2090, data.disease_name);
+          }
+        );
+      } else {
+        fetchWeather(28.6139, 77.2090, data.disease_name);
+      }
+    }
+  }, [data]);
+
+  const fetchWeather = async (lat: number, lon: number, disease: string) => {
+    try {
+      const result = await getDiseaseRisk(lat, lon, disease);
+      setWeatherData(result);
+    } catch (e) {
+      console.error("Failed to fetch weather", e);
+    } finally {
+      setWeatherLoading(false);
+    }
+  };
 
   const speakText = (text: string) => {
     if ("speechSynthesis" in window) {
@@ -200,20 +232,39 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
                  </div>
               </div>
 
-              {data.recommendation?.text && (
-                 <button 
-                   onClick={() => speakText(data.recommendation.text)}
-                   className={`flex items-center gap-3 font-bold px-6 py-4 rounded-2xl transition-all ${speaking ? 'bg-emerald-600 text-white shadow-lg animate-pulse' : 'bg-white text-emerald-600 border-2 border-emerald-100 hover:border-emerald-500 shadow-md'}`}
-                 >
-                   {speaking ? (
-                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" /></svg>
-                   ) : (
-                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
-                   )}
-                   {speaking ? t.speaking : t.listen}
-                 </button>
-              )}
-           </div>
+               <button 
+                 onClick={() => speakText(lang === 'hi' ? 
+                   `${disease} का पता चला है। गंभीरता ${severity} है।` : 
+                   `${disease} detected. Severity is ${severity}.`)}
+                 className="w-full glass py-4 text-emerald-800 font-bold hover:bg-white transition-all flex items-center justify-center gap-2 rounded-2xl"
+               >
+                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                 {speaking ? t.speaking : t.listen}
+               </button>
+
+               {/* Weather Risk Card */}
+               {weatherData && (
+                  <div className="glass p-5 flex flex-col space-y-3 bg-white/80 rounded-2xl border-2 border-emerald-100">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                        <span className="text-lg">🌦️</span> {weatherData.weather.location} Weather
+                      </p>
+                      <span className="font-bold text-slate-700">{weatherData.weather.temp}°C, {weatherData.weather.humidity}% Humidity</span>
+                    </div>
+                    
+                    <div className={`p-4 rounded-xl border ${
+                      weatherData.risk.level === 'CRITICAL' ? 'bg-red-50 border-red-200 text-red-800' :
+                      weatherData.risk.level === 'HIGH' ? 'bg-amber-50 border-amber-200 text-amber-800' :
+                      'bg-emerald-50 border-emerald-200 text-emerald-800'
+                    }`}>
+                      <p className="font-black text-sm uppercase mb-1">
+                        {weatherData.risk.level} SPREAD RISK
+                      </p>
+                      <p className="text-sm font-medium">{weatherData.risk.message}</p>
+                    </div>
+                  </div>
+               )}
+            </div>
         </div>
 
         {/* Vision Re-Analysis Section */}
@@ -321,7 +372,6 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
            </div>
         </div>
 
-        <div className="flex justify-center pt-8">
            <Link href="/scan">
               <button className="btn-premium px-12 py-5 text-xl">{t.another}</button>
            </Link>
