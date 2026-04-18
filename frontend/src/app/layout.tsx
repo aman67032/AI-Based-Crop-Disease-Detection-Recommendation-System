@@ -63,6 +63,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${pacifico.variable} ${spaceGrotesk.variable} ${outfit.variable} ${poppins.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              const theme = localStorage.getItem('theme');
+              if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+              } else {
+                document.documentElement.classList.remove('dark');
+              }
+            })()
+          `
+        }} />
+      </head>
       <body className="antialiased overflow-x-hidden md:pb-0 pb-[80px]">
         <Navbar />
         {children}

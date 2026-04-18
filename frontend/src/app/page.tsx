@@ -135,11 +135,7 @@ export default function HomePage() {
   };
 
   const executeScan = () => {
-    if (!image) return;
-    setIsExecutingScan(true);
-    setTimeout(() => {
-      router.push("/scan");
-    }, 2500);
+    router.push("/scan");
   };
 
   return (
@@ -169,7 +165,7 @@ export default function HomePage() {
               {t.heroDesc}
             </p>
             <div className="pt-2 md:pt-4 flex flex-col sm:flex-row gap-3 md:gap-4">
-              <a href="#scan" className="btn-primary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto">Scan Now</a>
+              <Link href="/scan" className="btn-primary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto">Scan Now</Link>
               <a href="#about" className="btn-secondary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto">Learn More</a>
               <Link href="/farm" className="btn-secondary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto bg-[#4caf50]/10 text-green-300 border-[#4caf50]/50 hover:bg-[#4caf50]/20">Explore Your Area</Link>
             </div>
@@ -278,7 +274,9 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center space-y-4 mb-12 md:mb-16">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--text)]">{t.scanTitle}</h2>
+            <Link href="/scan" className="hover:opacity-80 transition-opacity">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--text)]">{t.scanTitle}</h2>
+            </Link>
             <p className="text-[var(--text-secondary)] font-medium text-base md:text-lg max-w-2xl mx-auto">{t.scanDesc}</p>
           </div>
 

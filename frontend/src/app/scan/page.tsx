@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { detectDisease } from "@/lib/api";
 
 export default function ScanPage() {
   const router = useRouter();
@@ -15,6 +16,20 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [isCameraOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,19 +44,26 @@ export default function ScanPage() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: "environment" },
+      const constraints = { 
+        video: { facingMode: { ideal: "environment" } },
         audio: false 
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      streamRef.current = stream;
+      setIsCameraOpen(true);
+      setPreview(null);
+      setImage(null);
+    } catch (err) {
+      console.error("Camera access denied or failed:", err);
+      try {
+        // Fallback to any available camera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         streamRef.current = stream;
         setIsCameraOpen(true);
-        setPreview(null);
-        setImage(null);
+      } catch (fallbackErr) {
+        console.error("Complete camera failure:", fallbackErr);
+        alert("Could not access camera. Please check permissions.");
       }
-    } catch (err) {
-      console.error("Camera access denied");
     }
   };
 
@@ -94,10 +116,18 @@ export default function ScanPage() {
   const handleScan = async () => {
     if (!image) return;
     setLoading(true);
-    // Simulate scan
-    setTimeout(() => {
-      router.push(`/history`);
-    }, 2000);
+    try {
+      const res = await detectDisease(image);
+      router.push(`/results/${res.id}`);
+    } catch (err) {
+      console.error("Scan failed:", err);
+      // Fallback for demo if API fails
+      setTimeout(() => {
+        router.push(`/history`);
+      }, 2000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

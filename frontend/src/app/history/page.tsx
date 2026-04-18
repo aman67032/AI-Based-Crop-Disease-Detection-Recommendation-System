@@ -51,37 +51,7 @@ export default function HistoryPage() {
       style={{ backgroundImage: "url('/0cad129d9c0d34eaac50302009a2360c.jpg')" }}
     >
       <div className="absolute inset-0 bg-[var(--bg)]/80 backdrop-blur-sm z-0"></div>
-      <div className="relative z-10">
-        <nav className="w-full z-50 px-6 py-4 glass border-b border-[var(--glass-border)] sticky top-0">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          {/* Logo - Left */}
-          <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <img src="/logo(leafscan).png" alt="LeafScan Logo" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
-            <span className="font-extrabold text-2xl tracking-tight text-[var(--text)]">
-              Leaf<span className="text-[var(--primary)]">Scan</span>
-            </span>
-          </Link>
-
-          {/* Links - Center */}
-          <div className="hidden md:flex gap-8 items-center font-semibold text-[var(--text-secondary)]">
-            <Link href="/" className="hover:text-[var(--primary)] transition-colors">Home</Link>
-            <Link href="/#about" className="hover:text-[var(--primary)] transition-colors">About Us</Link>
-            <Link href="/search" className="hover:text-[var(--primary)] transition-colors">Search</Link>
-            <Link href="/history" className="hover:text-[var(--primary)] transition-colors">History</Link>
-            <Link href="/weather" className="hover:text-[var(--primary)] transition-colors">Weather</Link>
-          </div>
-
-          {/* Login - Right */}
-          <div className="flex items-center gap-3">
-             <Link href="/login" className="btn-primary py-2 px-4 md:px-6 rounded-full text-xs md:text-sm whitespace-nowrap">
-                <span className="hidden sm:inline">Login / Sign In</span>
-                <span className="sm:hidden">Login</span>
-             </Link>
-          </div>
-        </div>
-      </nav>
-
-      <div className="max-w-6xl mx-auto px-6 mt-12 space-y-8 animate-fade-in-up">
+      <div className="relative z-10 pt-20 md:pt-28 max-w-6xl mx-auto px-6 space-y-8 animate-fade-in-up">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-2">
             <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--text)] tracking-tight">Scan History</h1>
