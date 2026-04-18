@@ -43,11 +43,18 @@ def init_ee():
             )
             logger.info("Using GEE credentials from file")
 
-        if not project_id:
-            raise Exception("project_id not found in GEE JSON key")
+        # Try initializing Earth Engine:
+        # 1. First try with project (requires Service Usage Consumer role)
+        # 2. Fallback to without project (uses service account's default project)
+        try:
+            ee.Initialize(credentials, project=project_id)
+            logger.info(f"Initialized Earth Engine with project={project_id}")
+        except Exception as proj_err:
+            logger.warning(f"EE init with project failed: {proj_err}")
+            logger.info("Retrying EE init without explicit project...")
+            ee.Initialize(credentials)
+            logger.info("Initialized Earth Engine without explicit project (using SA default)")
 
-        # Initialize dynamically with whatever project the user provides
-        ee.Initialize(credentials, project=project_id)
         _INITIALIZED = True
         logger.info("Successfully initialized Google Earth Engine")
         return True
@@ -74,8 +81,11 @@ def get_ndvi_thumbnail(polygon_coords: list) -> str:
         roi = ee.Geometry.Polygon([ee_coords])
 
         # Get Sentinel-2 Surface Reflectance data from the past month
-        end_date = ee.Date(ee.Date(ee.Date.now()).format('YYYY-MM-DD'))
-        start_date = end_date.advance(-30, 'day')
+        from datetime import datetime, timedelta
+        end_date_str = datetime.utcnow().strftime('%Y-%m-%d')
+        start_date_str = (datetime.utcnow() - timedelta(days=30)).strftime('%Y-%m-%d')
+        end_date = ee.Date(end_date_str)
+        start_date = ee.Date(start_date_str)
 
         collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
                       .filterBounds(roi)
@@ -84,7 +94,8 @@ def get_ndvi_thumbnail(polygon_coords: list) -> str:
 
         # Fallback if no recent cloud-free images are available
         if collection.size().getInfo() == 0:
-            start_date = end_date.advance(-90, 'day')
+            start_date_str = (datetime.utcnow() - timedelta(days=90)).strftime('%Y-%m-%d')
+            start_date = ee.Date(start_date_str)
             collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
                           .filterBounds(roi)
                           .filterDate(start_date, end_date)
