@@ -88,7 +88,7 @@ export default function BottomNav() {
                     {item.icon}
                   </Link>
                   <span className="text-[11px] font-extrabold mt-1.5 text-[var(--primary)] whitespace-nowrap">
-                    {item.nameHi}
+                    {item.name}
                   </span>
                 </div>
               );
@@ -100,7 +100,7 @@ export default function BottomNav() {
                   {item.icon}
                 </div>
                 <span className={`text-[10px] font-bold transition-colors duration-300 ${isActive ? "text-[var(--primary)]" : "text-[var(--text-muted)]"} whitespace-nowrap`}>
-                  {item.nameHi}
+                  {item.name}
                 </span>
                 {isActive && (
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--gold)] mt-0.5" />

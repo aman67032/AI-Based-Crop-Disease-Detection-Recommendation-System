@@ -575,10 +575,47 @@
   }
 }
 
-/* ── Line clamp utility ─────────────────────────────── */
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ── Google Translate Widget Styling ──────────────────── */
+.goog-te-combo {
+  background-color: var(--primary) !important;
+  color: white !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding: 6px 12px !important;
+  font-family: inherit !important;
+  outline: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+  cursor: pointer;
+}
+
+.goog-te-combo option {
+  background-color: var(--green-950) !important;
+  color: var(--gold-light) !important;
+  padding: 10px !important;
+  font-weight: 500;
+}
+
+.goog-te-gadget {
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.goog-te-gadget .goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0 !important;
+}
+
