@@ -12,6 +12,8 @@ from bson import ObjectId
 from database.mongo import get_db
 from config import get_settings
 from typing import Optional
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 settings = get_settings()
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
@@ -31,6 +33,9 @@ class LoginRequest(BaseModel):
     email: str = ""
     phone: str = ""
     password: str
+
+class GoogleLoginRequest(BaseModel):
+    token: str
 
 
 def create_token(user_id: str) -> str:
@@ -132,6 +137,59 @@ async def login(req: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
         "user": {"id": str(user["_id"]), "name": user.get("name"), "email": user.get("email")},
         "token": create_token(str(user["_id"])),
     }
+
+
+@router.post("/google")
+async def google_login(req: GoogleLoginRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
+    try:
+        # Verify the Firebase token
+        # You can use id_token.verify_firebase_token if you have firebase-admin,
+        # or verify_oauth2_token if using standard Google Sign-In.
+        # Firebase tokens have specific audiences, so we use verify_firebase_token.
+        # However, for pure google-auth library, we can do this:
+        request = requests.Request()
+        # Firebase project ID is the audience
+        audience = "crop3-6561e" 
+        
+        # We can use the generic verify_oauth2_token or verify_firebase_token if we import it,
+        # but to avoid auth library issues, let's verify without strict audience if needed,
+        # or use the standard firebase verify method:
+        # Note: google-auth supports verify_firebase_token
+        id_info = id_token.verify_firebase_token(req.token, request, audience=audience)
+        
+        email = id_info.get("email")
+        name = id_info.get("name", "Google User")
+        
+        if not email:
+            raise HTTPException(400, "Google token did not contain an email")
+            
+        # Check if user exists in MongoDB
+        user = await db.users.find_one({"email": email})
+        
+        if not user:
+            # Create a new user automatically
+            user_doc = {
+                "name": name,
+                "email": email,
+                "phone": None,
+                "password_hash": None, # No password for Google users
+                "language_pref": "en",
+                "created_at": datetime.now(timezone.utc)
+            }
+            result = await db.users.insert_one(user_doc)
+            user_id = str(result.inserted_id)
+            user = {"_id": result.inserted_id, "name": name, "email": email}
+        else:
+            user_id = str(user["_id"])
+            
+        return {
+            "user": {"id": user_id, "name": user.get("name"), "email": user.get("email")},
+            "token": create_token(user_id),
+        }
+    except ValueError as e:
+        # Invalid token
+        print("Token verification failed:", e)
+        raise HTTPException(401, "Invalid Google token")
 
 
 @router.get("/me")

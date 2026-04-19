@@ -72,8 +72,9 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {isAuth ? (
             <div className="flex items-center gap-2">
+              <div id="google_translate_element" className="hidden md:block mr-2 [&>div]:!h-auto [&_.goog-te-combo]:!p-1 [&_.goog-te-combo]:!rounded-lg [&_.goog-te-combo]:!bg-white/10 [&_.goog-te-combo]:!border-white/30 [&_.goog-te-combo]:!text-sm [&_.goog-te-combo]:!text-white [&_.goog-te-combo]:!backdrop-blur-md"></div>
               <Link href="/profile" className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[var(--primary)] w-11 h-11 md:w-auto md:px-5 md:py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl hover:bg-[var(--primary-dark)]">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7z" /></svg>
                 <span className="hidden md:inline md:ml-2">Profile</span>
               </Link>
               <button 
@@ -88,16 +89,19 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <Link href="/login" className={`group relative inline-flex items-center justify-center overflow-hidden rounded-full w-11 h-11 md:w-auto md:px-6 md:py-2.5 text-sm font-semibold shadow-lg transition-all hover:scale-105 ${
-              scrolled 
-                ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]" 
-                : "bg-white/20 text-white border border-white/30 backdrop-blur-md hover:bg-white/30"
-            }`}>
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              <span className="hidden md:inline md:ml-2">Login</span>
-            </Link>
+            <div className="flex items-center gap-2">
+              <div id="google_translate_element" className="hidden md:block mr-2 [&>div]:!h-auto [&_.goog-te-combo]:!p-1 [&_.goog-te-combo]:!rounded-lg [&_.goog-te-combo]:!bg-white/10 [&_.goog-te-combo]:!border-white/30 [&_.goog-te-combo]:!text-sm [&_.goog-te-combo]:!text-white [&_.goog-te-combo]:!backdrop-blur-md"></div>
+              <Link href="/login" className={`group relative inline-flex items-center justify-center overflow-hidden rounded-full w-11 h-11 md:w-auto md:px-6 md:py-2.5 text-sm font-semibold shadow-lg transition-all hover:scale-105 ${
+                scrolled 
+                  ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]" 
+                  : "bg-white/20 text-white border border-white/30 backdrop-blur-md hover:bg-white/30"
+              }`}>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span className="hidden md:inline md:ml-2">Login</span>
+              </Link>
+            </div>
           )}
         </div>
       </div>

@@ -62,8 +62,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${pacifico.variable} ${spaceGrotesk.variable} ${outfit.variable} ${poppins.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${pacifico.variable} ${spaceGrotesk.variable} ${outfit.variable} ${poppins.variable}`}>
       <head>
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+            }
+          `
+        }} />
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+        
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
@@ -77,7 +86,7 @@ export default function RootLayout({
           `
         }} />
       </head>
-      <body className="antialiased overflow-x-hidden md:pb-0 pb-[80px]">
+      <body suppressHydrationWarning className="antialiased overflow-x-hidden md:pb-0 pb-[80px]">
         <Navbar />
         {children}
         <BottomNav />

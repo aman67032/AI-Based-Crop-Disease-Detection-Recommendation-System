@@ -186,6 +186,19 @@ export async function loginUser(data: Record<string, string>) {
   return res.json();
 }
 
+export async function loginWithGoogle(idToken: string) {
+  const res = await fetch(`${API_BASE}/api/auth/google`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: idToken }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "Google Login failed" }));
+    throw new Error(err.detail || "Google Login failed");
+  }
+  return res.json();
+}
+
 /**
  * Advanced Vision Analysis (Grok/Gemini)
  */
