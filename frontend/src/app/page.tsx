@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
+import { detectDisease } from "@/lib/api";
 
 const TRANSLATIONS: Record<string, any> = {
   en: {
@@ -134,142 +135,154 @@ export default function HomePage() {
     }
   };
 
-  const executeScan = () => {
-    router.push("/scan");
+  const executeScan = async () => {
+    if (!image) return;
+    setIsExecutingScan(true);
+    try {
+      const res = await detectDisease(image);
+      router.push(`/results/${res.id}`);
+    } catch (err) {
+      console.error("Scan failed:", err);
+      // Fallback for demo if API fails
+      setTimeout(() => {
+        router.push(`/history`);
+      }, 2000);
+    } finally {
+      setIsExecutingScan(false);
+    }
   };
 
   return (
     <main className="min-h-screen bg-[var(--bg)] selection:bg-[var(--green-200)]">
 
-      {/* ── Hero Section with Video Background and Image Collage ──────────────── */}
-      <section className="relative min-h-[100vh] flex items-center justify-center pt-24 pb-28 md:pt-32 md:pb-40 overflow-hidden">
-        {/* Video Background */}
+      {/* ── Hero — Video Background with Warm Overlay ──────────────── */}
+      <section className="relative min-h-[100vh] flex items-center justify-center pt-20 pb-32 md:pt-28 md:pb-40 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/dc0a6f2b4300f5704f25c260209e6477.jpg" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover scale-100"
-          />
+          <video src="/crop.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
           <div className="hero-video-overlay" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12 animate-fade-in-up w-full">
-          
-          <div className="text-left space-y-6 md:space-y-8 md:w-1/2">
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-white leading-tight tracking-tight drop-shadow-2xl">
-              We take care of your <br className="hidden md:block"/>
-              <span className="text-gradient-light">plants intelligently</span>
+          <div className="text-center md:text-left space-y-6 md:space-y-8 md:w-3/5 mt-8 md:mt-0">
+            {/* Leaf SVG accent */}
+            <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+              <svg className="w-10 h-10 text-[var(--gold-light)] animate-sway" viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/></svg>
+              <span className="text-[var(--gold-light)] font-bold text-sm uppercase tracking-[0.2em]">AI-Powered Crop Care</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight text-shadow-heavy">
+              Protect Your Crops,{" "}
+              <span className="text-[var(--gold-light)]">Grow With Confidence</span>
             </h1>
             
-            <p className="text-sm md:text-xl text-white/90 leading-relaxed font-semibold drop-shadow max-w-lg">
+            <p className="text-lg md:text-xl text-white/90 leading-relaxed font-medium max-w-xl mx-auto md:mx-0 text-shadow">
               {t.heroDesc}
             </p>
-            <div className="pt-2 md:pt-4 flex flex-col sm:flex-row gap-3 md:gap-4">
-              <Link href="/scan" className="btn-primary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto">Scan Now</Link>
-              <a href="#about" className="btn-secondary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto">Learn More</a>
-              <Link href="/farm" className="btn-secondary py-3 px-8 text-base md:text-lg text-center w-full sm:w-auto bg-[#4caf50]/10 text-green-300 border-[#4caf50]/50 hover:bg-[#4caf50]/20">Explore Your Area</Link>
+
+            <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <Link href="#scan" className="btn-primary w-full sm:w-auto text-xl py-5 px-10 shadow-2xl">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                Scan Your Plant
+              </Link>
+              <Link href="/farm" className="btn-secondary w-full sm:w-auto bg-white/10 text-white border-white/30 hover:bg-white hover:text-[var(--primary-dark)]">
+                🛰️ Explore My Area
+              </Link>
             </div>
           </div>
           
-          <div className="md:w-1/2 flex justify-center mt-6 md:mt-0">
-            {/* Image Collage */}
-            <div className="hero-collage scale-75 sm:scale-90 md:scale-100">
-              <div className="hero-collage-img">
-                <img src="/Best%20Organic%20Fertilizers%20for%20Summer%20Growth.webp" alt="Organic Fertilizer" />
-              </div>
-              <div className="hero-collage-img">
-                <img src="/plant-disease-2-1.jpg" alt="Plant Disease" />
-              </div>
-              <div className="hero-collage-img">
-                <img src="/images%20(3).jfif" alt="Healthy Field" />
-              </div>
+          {/* Image Collage — Desktop only */}
+          <div className="hidden md:flex md:w-2/5 justify-center mt-6 md:mt-0">
+            <div className="hero-collage">
+              <div className="hero-collage-img"><img src="/Best%20Organic%20Fertilizers%20for%20Summer%20Growth.webp" alt="Organic Fertilizer" /></div>
+              <div className="hero-collage-img"><img src="/plant-disease-2-1.jpg" alt="Plant Disease" /></div>
+              <div className="hero-collage-img"><img src="/images%20(3).jfif" alt="Healthy Field" /></div>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* ── How It Works Section ──────────────────────────────── */}
-      <section className="py-20 md:py-24 px-6 bg-[var(--green-50)] relative">
-        <div className="max-w-7xl mx-auto text-center space-y-12 md:space-y-16">
+      {/* ── How It Works ──────────────────────────────── */}
+      <section className="py-20 md:py-28 px-6 mesh-bg-warm relative overflow-hidden">
+        <div className="absolute -left-20 top-20 w-60 h-60 bg-[var(--gold-light)] rounded-full mix-blend-multiply filter blur-[80px] opacity-40 animate-sunrise" />
+        <div className="max-w-6xl mx-auto text-center space-y-12 md:space-y-16">
           <div className="space-y-4">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[var(--text)]">How LeafScan Works</h2>
-            <p className="text-[var(--text-secondary)] font-medium text-base md:text-lg max-w-2xl mx-auto">Three simple steps to healthier plants and better yields.</p>
+            <span className="badge badge-earth text-sm">Simple & Easy</span>
+            <h2 className="text-jumbo text-[var(--text)]">How LeafScan Works</h2>
+            <p className="text-readable max-w-2xl mx-auto">Three simple steps to healthier plants and better yields.</p>
+            <div className="organic-divider max-w-[120px] mx-auto mt-4" />
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="glass p-8 rounded-3xl bg-white shadow-xl hover:-translate-y-2 transition-transform duration-300 border border-[var(--glass-border)]">
-              <div className="w-16 h-16 bg-[var(--green-100)] text-[var(--primary)] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
-              <h3 className="text-xl font-bold text-[var(--text)] mb-4">Upload Image</h3>
-              <p className="text-[var(--text-secondary)]">Take a clear photo of the affected plant leaf or upload from your gallery.</p>
+          <div className="grid md:grid-cols-3 gap-8 stagger-children">
+            {/* Step 1 */}
+            <div className="card-earth p-8 md:p-10 text-center space-y-5">
+              <div className="w-20 h-20 bg-[var(--green-100)] rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+                <svg className="w-10 h-10 text-[var(--primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              </div>
+              <h3 className="text-xl font-extrabold text-[var(--text)]">Take a Photo</h3>
+              <p className="text-[var(--text-secondary)] text-base font-medium leading-relaxed">Click a clear photo of the affected leaf using your phone camera.</p>
             </div>
-            <div className="glass p-8 rounded-3xl bg-white shadow-xl hover:-translate-y-2 transition-transform duration-300 border border-[var(--glass-border)]">
-              <div className="w-16 h-16 bg-[var(--green-100)] text-[var(--primary)] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
-              <h3 className="text-xl font-bold text-[var(--text)] mb-4">AI Analysis</h3>
-              <p className="text-[var(--text-secondary)]">Our advanced AI model instantly scans the image to detect any diseases.</p>
+            {/* Step 2 */}
+            <div className="card-earth p-8 md:p-10 text-center space-y-5">
+              <div className="w-20 h-20 bg-[var(--gold-light)]/30 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+                <svg className="w-10 h-10 text-[var(--gold-dark)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+              </div>
+              <h3 className="text-xl font-extrabold text-[var(--text)]">AI Analysis</h3>
+              <p className="text-[var(--text-secondary)] text-base font-medium leading-relaxed">Our AI instantly identifies the disease and its severity level.</p>
             </div>
-            <div className="glass p-8 rounded-3xl bg-white shadow-xl hover:-translate-y-2 transition-transform duration-300 border border-[var(--glass-border)]">
-              <div className="w-16 h-16 bg-[var(--green-100)] text-[var(--primary)] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
-              <h3 className="text-xl font-bold text-[var(--text)] mb-4">Get Treatment</h3>
-              <p className="text-[var(--text-secondary)]">Receive accurate diagnosis along with organic and chemical treatment recommendations.</p>
+            {/* Step 3 */}
+            <div className="card-earth p-8 md:p-10 text-center space-y-5">
+              <div className="w-20 h-20 bg-[var(--terracotta-light)]/30 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+                <svg className="w-10 h-10 text-[var(--terracotta)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <h3 className="text-xl font-extrabold text-[var(--text)]">Get Treatment</h3>
+              <p className="text-[var(--text-secondary)] text-base font-medium leading-relaxed">Receive organic and chemical treatment plans verified by experts.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── About Section ─────────────────────────────────────── */}
-      <section id="about" className="py-20 md:py-32 px-6 bg-[var(--bg-warm)] border-y border-[var(--earth-200)] relative overflow-hidden scroll-mt-24">
-        <div className="absolute right-0 top-0 w-[800px] h-[800px] bg-[url('/images%20(3).jfif')] bg-cover opacity-5 mix-blend-luminosity rounded-full filter blur-xl translate-x-1/2 -translate-y-1/4"></div>
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center relative z-10">
+      <section id="about" className="py-20 md:py-32 px-6 bg-[var(--bg-warm)] relative overflow-hidden scroll-mt-24">
+        <div className="absolute right-0 top-0 w-[600px] h-[600px] bg-[var(--gold-light)] rounded-full mix-blend-multiply filter blur-[100px] opacity-20 translate-x-1/3 -translate-y-1/4" />
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center relative z-10">
           <div className="space-y-6 md:space-y-8 text-left">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-[var(--text)] leading-tight">
+            <span className="badge badge-earth text-sm">About LeafScan</span>
+            <h2 className="text-jumbo text-[var(--text)] leading-tight">
               {t.aboutTitle.split(' ').slice(0, -1).join(' ')} <br/>
-              <span className="text-[var(--primary)]">{t.aboutTitle.split(' ').slice(-1)}</span>
+              <span className="text-gradient-earth">{t.aboutTitle.split(' ').slice(-1)}</span>
             </h2>
-            <div className="w-16 md:w-20 h-2 bg-[var(--primary-light)] rounded-full"></div>
-            <p className="text-base md:text-lg text-[var(--text-secondary)] font-medium leading-relaxed">
-              {t.aboutDesc}
-            </p>
+            <div className="organic-divider max-w-[100px]" />
+            <p className="text-readable">{t.aboutDesc}</p>
             <ul className="space-y-4 pt-4">
               {['98% Accuracy Models', 'Expert Verified Treatments', 'Community of Farmers'].map((item, i) => (
-                <li key={i} className="flex items-center gap-4 text-[var(--text)] font-bold">
-                  <span className="w-8 h-8 rounded-full bg-[var(--green-200)] text-[var(--primary-dark)] flex items-center justify-center flex-shrink-0">✓</span>
+                <li key={i} className="flex items-center gap-4 text-[var(--text)] font-bold text-lg">
+                  <span className="w-10 h-10 rounded-full bg-[var(--green-100)] text-[var(--primary)] flex items-center justify-center flex-shrink-0 shadow-inner">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </span>
                   {item}
                 </li>
               ))}
             </ul>
           </div>
           <div className="relative order-first md:order-last">
-            <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl relative max-w-md mx-auto">
-              <video 
-                src="/crop.mp4" 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary-dark)]/60 to-transparent flex items-end p-8">
-                <div className="glass p-6 w-full backdrop-blur-xl bg-white/20 border-white/30 rounded-2xl">
+            <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative max-w-md mx-auto border-4 border-[var(--cream)]">
+              <img src="/images%20(3).jfif" alt="Indian Farming" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--earth)]/70 to-transparent flex items-end p-8">
+                <div className="glass p-6 w-full backdrop-blur-xl bg-white/25 border-white/30 rounded-2xl">
                   <h4 className="text-white font-bold text-lg">Trusted & Reliable</h4>
                   <p className="text-white/80 font-medium text-sm mt-1">Built with agronomists and AI experts.</p>
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[var(--accent-warm)] rounded-full mix-blend-multiply filter blur-2xl opacity-60"></div>
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[var(--terracotta)] rounded-full mix-blend-multiply filter blur-2xl opacity-30" />
           </div>
         </div>
       </section>
 
       {/* ── Interactive Scan CTA Section ──────────────────────── */}
       <section id="scan" className="py-20 md:py-32 px-6 relative scroll-mt-24 overflow-hidden">
-        {/* Background Image Overlay */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="/a68268f1c84cdb06d93efa985ce9566b.jpg" 
-            alt="Scan Background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+          <img src="/a68268f1c84cdb06d93efa985ce9566b.jpg" alt="Scan Background" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[var(--bg)]/85 backdrop-blur-sm" />
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -343,30 +356,29 @@ export default function HomePage() {
       </section>
 
       {/* ── Farm Mapping Section ─────────────────────────────────────── */}
-      <section className="py-32 px-6 bg-[var(--bg)] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+      <section className="py-24 md:py-32 px-6 mesh-bg relative overflow-hidden">
+        <div className="absolute right-0 bottom-0 w-[400px] h-[400px] bg-[var(--primary)] rounded-full mix-blend-multiply filter blur-[80px] opacity-15" />
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-16 items-center relative z-10">
           <div className="order-last md:order-first relative">
-             <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white group">
+             <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border-4 border-[var(--cream)] group">
                <img src="/farm.png" alt="Farm Map" className="w-full object-cover group-hover:scale-105 transition-transform duration-700" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+               <div className="absolute inset-0 bg-gradient-to-t from-[var(--earth)]/80 via-black/20 to-transparent" />
                <div className="absolute bottom-6 left-6 text-white">
                   <h4 className="text-2xl font-black flex items-center gap-2"><span className="text-3xl">🛰️</span> Live Satellite View</h4>
                   <p className="text-sm font-medium opacity-90 mt-1">Track NDVI and crop health from space.</p>
                </div>
              </div>
-             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[var(--primary)] rounded-full mix-blend-multiply filter blur-2xl opacity-30"></div>
           </div>
           <div className="space-y-8 text-left">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[var(--text)] leading-tight">
-              Monitor Your <span className="text-[var(--primary)]">Entire Area</span>
+            <span className="badge badge-green text-sm">Satellite Mapping</span>
+            <h2 className="text-jumbo text-[var(--text)] leading-tight">
+              Monitor Your <span className="text-gradient-earth">Entire Area</span>
             </h2>
-            <div className="w-20 h-2 bg-[var(--primary-light)] rounded-full"></div>
-            <p className="text-lg text-[var(--text-secondary)] font-medium leading-relaxed">
-              Don't just scan single leaves. Map your entire field and analyze crop health from space using advanced NDVI satellite imagery. Detect stress patterns early before they spread and optimize your yield.
-            </p>
+            <div className="organic-divider max-w-[100px]" />
+            <p className="text-readable">Map your entire field and analyze crop health from space using NDVI satellite imagery. Detect stress patterns early before they spread.</p>
             <div className="pt-4">
                <Link href="/farm" className="btn-primary py-4 px-8 text-lg inline-flex items-center gap-3">
-                 Explore My Area <span className="text-xl">→</span>
+                 🛰️ Explore My Area <span className="text-xl">→</span>
                </Link>
             </div>
           </div>
@@ -374,39 +386,35 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ────────────────────────────────────────────── */}
-      <footer className="bg-[var(--green-950)] text-white/80 py-16 px-6 border-t-[8px] border-[var(--primary)] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--primary-dark)] rounded-full filter blur-[100px] opacity-50 translate-x-1/2 -translate-y-1/2"></div>
-        <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-12 relative z-10">
+      <footer className="bg-[var(--earth)] text-white/80 py-16 px-6 border-t-4 border-[var(--gold)] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[var(--primary-dark)] rounded-full filter blur-[100px] opacity-30 translate-x-1/2 -translate-y-1/2" />
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 relative z-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <img src="/logo(leafscan).png" alt="Logo" className="w-10 h-10 object-contain" />
               <span className="font-extrabold text-2xl tracking-tight text-white">LeafScan</span>
             </div>
-            <p className="text-[var(--green-200)] max-w-sm font-medium">
-              Intelligent plant care platform powered by AI. Empowering farmers with accurate detection and sustainable treatments.
+            <p className="text-[var(--terracotta-light)] max-w-sm font-medium leading-relaxed">
+              AI-powered plant care. Empowering Indian farmers with accurate disease detection and sustainable treatments.
             </p>
           </div>
           <div>
-            <h4 className="text-white font-bold text-lg mb-6 tracking-wide">Quick Links</h4>
-            <ul className="space-y-3 font-medium">
+            <h4 className="text-[var(--gold-light)] font-bold text-lg mb-6 tracking-wide">Quick Links</h4>
+            <ul className="space-y-3 font-medium text-base">
               <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
               <li><Link href="/search" className="hover:text-white transition-colors">Search Diseases</Link></li>
-              <li><Link href="/weather" className="hover:text-white transition-colors">Weather Insights</Link></li>
+              <li><Link href="/weather" className="hover:text-white transition-colors">Weather</Link></li>
+              <li><Link href="/farm" className="hover:text-white transition-colors">My Area</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-bold text-lg mb-6 tracking-wide">Get Started</h4>
-            <Link href="/register" className="inline-block bg-[var(--primary)] text-white font-bold px-8 py-3 rounded-xl hover:bg-[var(--primary-light)] transition-colors shadow-lg">
-              Create Free Account
-            </Link>
+            <h4 className="text-[var(--gold-light)] font-bold text-lg mb-6 tracking-wide">Get Started</h4>
+            <Link href="/register" className="btn-primary py-3 px-8 text-base">Create Free Account</Link>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10 text-center font-medium text-sm flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-6xl mx-auto mt-16 pt-8 border-t border-white/10 text-center font-medium text-sm flex flex-col md:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} LeafScan. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-          </div>
+          <div className="flex gap-6"><a href="#" className="hover:text-white transition-colors">Privacy</a><a href="#" className="hover:text-white transition-colors">Terms</a></div>
         </div>
       </footer>
     </main>

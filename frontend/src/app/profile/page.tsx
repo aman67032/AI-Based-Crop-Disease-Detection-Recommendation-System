@@ -33,16 +33,16 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen mesh-bg flex flex-col items-center justify-center p-6 text-center space-y-4">
-        <div className="w-20 h-20 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin" />
-        <p className="font-bold text-slate-500 animate-pulse">Loading Profile...</p>
+      <div className="min-h-screen mesh-bg-warm flex flex-col items-center justify-center p-6 text-center space-y-4">
+        <div className="w-20 h-20 border-4 border-[var(--cream-dark)] border-t-[var(--primary)] rounded-full animate-spin" />
+        <p className="font-bold text-[var(--text-muted)] animate-pulse">Loading Profile...</p>
       </div>
     );
   }
 
   if (!profile) {
     return (
-      <div className="min-h-screen mesh-bg flex flex-col items-center justify-center p-6 text-center space-y-6">
+      <div className="min-h-screen mesh-bg-warm flex flex-col items-center justify-center p-6 text-center space-y-6">
         <div className="w-24 h-24 bg-red-100 text-red-600 rounded-3xl flex items-center justify-center text-4xl shadow-xl">
           ⚠️
         </div>
@@ -71,7 +71,7 @@ export default function ProfilePage() {
   const healthyCount = totalScans - diseases.length;
 
   return (
-    <main className="min-h-screen mesh-bg py-8 px-6">
+    <main className="min-h-screen mesh-bg-warm py-8 px-6 pb-28">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -91,9 +91,9 @@ export default function ProfilePage() {
 
         {/* Profile Card */}
         <div
-          className="rounded-3xl overflow-hidden shadow-2xl border-2 border-emerald-500/30"
+          className="rounded-[2rem] overflow-hidden shadow-2xl border border-[var(--gold)]/30"
           style={{
-            background: "linear-gradient(135deg, #0f172a 0%, #064e3b 100%)",
+            background: "linear-gradient(135deg, var(--earth) 0%, var(--primary-dark) 100%)",
           }}
         >
           <div className="p-10 flex flex-col md:flex-row items-center gap-8">
@@ -126,23 +126,17 @@ export default function ProfilePage() {
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[90px]">
-                <p className="text-3xl font-black text-white">{totalScans}</p>
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mt-1">
-                  Scans
-                </p>
+              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[80px]">
+                <p className="text-2xl md:text-3xl font-black text-white">{totalScans}</p>
+                <p className="text-xs font-bold text-[var(--gold-light)] uppercase tracking-wider mt-1">Scans</p>
               </div>
-              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[90px]">
-                <p className="text-3xl font-black text-white">{totalFarmScans}</p>
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mt-1">
-                  Farms
-                </p>
+              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[80px]">
+                <p className="text-2xl md:text-3xl font-black text-white">{totalFarmScans}</p>
+                <p className="text-xs font-bold text-[var(--gold-light)] uppercase tracking-wider mt-1">Farms</p>
               </div>
-              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[90px]">
-                <p className="text-3xl font-black text-emerald-400">{healthyCount}</p>
-                <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mt-1">
-                  Healthy
-                </p>
+              <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10 min-w-[80px]">
+                <p className="text-2xl md:text-3xl font-black text-[var(--gold-light)]">{healthyCount}</p>
+                <p className="text-xs font-bold text-[var(--gold-light)] uppercase tracking-wider mt-1">Healthy</p>
               </div>
             </div>
           </div>
@@ -152,20 +146,20 @@ export default function ProfilePage() {
         <div className="flex gap-2">
           <button
             onClick={() => setActiveTab("scans")}
-            className={`flex-1 py-4 rounded-2xl font-black text-sm tracking-wider uppercase transition-all ${
+            className={`flex-1 py-4 rounded-2xl font-black text-sm tracking-wider uppercase transition-all min-h-[56px] ${
               activeTab === "scans"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
-                : "glass text-slate-600 hover:bg-white/80"
+                ? "bg-[var(--primary)] text-white shadow-lg"
+                : "card-earth text-[var(--text-secondary)] hover:bg-[var(--cream-dark)]"
             }`}
           >
             🔬 Disease Scans ({totalScans})
           </button>
           <button
             onClick={() => setActiveTab("farms")}
-            className={`flex-1 py-4 rounded-2xl font-black text-sm tracking-wider uppercase transition-all ${
+            className={`flex-1 py-4 rounded-2xl font-black text-sm tracking-wider uppercase transition-all min-h-[56px] ${
               activeTab === "farms"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
-                : "glass text-slate-600 hover:bg-white/80"
+                ? "bg-[var(--primary)] text-white shadow-lg"
+                : "card-earth text-[var(--text-secondary)] hover:bg-[var(--cream-dark)]"
             }`}
           >
             🛰️ Farm Scans ({totalFarmScans})
@@ -176,7 +170,7 @@ export default function ProfilePage() {
         {activeTab === "scans" && (
           <div className="space-y-4">
             {history.length === 0 ? (
-              <div className="glass p-12 text-center bg-white/60 space-y-4">
+              <div className="card-earth p-12 text-center space-y-4">
                 <p className="text-5xl">🌱</p>
                 <p className="text-slate-500 font-bold text-lg">No disease scans yet</p>
                 <Link href="/scan">
@@ -202,7 +196,7 @@ export default function ProfilePage() {
 
                   return (
                     <Link href={`/results/${item.id}`} key={item.id}>
-                      <div className="glass p-6 bg-white/70 card-hover space-y-3 border-l-4 border-l-emerald-500 group">
+                      <div className="card-earth p-6 card-hover space-y-3 border-l-4 group" style={{borderLeftColor: isHealthy ? 'var(--primary)' : 'var(--terracotta)'}}>
                         <div className="flex items-center justify-between">
                           <span
                             className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
@@ -250,7 +244,7 @@ export default function ProfilePage() {
         {activeTab === "farms" && (
           <div className="space-y-4">
             {farmScans.length === 0 ? (
-              <div className="glass p-12 text-center bg-white/60 space-y-4">
+              <div className="card-earth p-12 text-center space-y-4">
                 <p className="text-5xl">🛰️</p>
                 <p className="text-slate-500 font-bold text-lg">No farm scans saved yet</p>
                 <Link href="/farm">
@@ -271,7 +265,7 @@ export default function ProfilePage() {
 
                   return (
                     <Link href={`/farm?scan_id=${scan.id}`} key={scan.id}>
-                      <div className="glass p-6 bg-white/70 card-hover space-y-3 border-l-4 border-l-cyan-500 cursor-pointer hover:border-cyan-400 transition-colors">
+                      <div className="card-earth p-6 card-hover space-y-3 border-l-4 border-l-[var(--gold)] cursor-pointer hover:border-[var(--gold-dark)] transition-colors">
                         <div className="flex items-center justify-between">
                           <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-cyan-100 text-cyan-700">
                             🛰️ NDVI Scan

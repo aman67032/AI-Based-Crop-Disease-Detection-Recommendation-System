@@ -185,14 +185,14 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
   };
 
   if (loading) return (
-    <div className="min-h-screen mesh-bg flex flex-col items-center justify-center p-6 text-center space-y-4">
-       <div className="w-20 h-20 border-4 border-emerald-100 border-t-emerald-600 rounded-full animate-spin" />
+    <div className="min-h-screen mesh-bg-warm flex flex-col items-center justify-center p-6 text-center space-y-4">
+       <div className="w-20 h-20 border-4 border-[var(--cream-dark)] border-t-[var(--primary)] rounded-full animate-spin" />
        <p className="font-bold text-slate-500 animate-pulse">{lang === 'hi' ? 'रिपोर्ट प्राप्त की जा रही है...' : 'Retrieving Report...'}</p>
     </div>
   );
 
   if (!data) return (
-    <div className="min-h-screen mesh-bg flex flex-col items-center justify-center p-6 text-center space-y-6">
+    <div className="min-h-screen mesh-bg-warm flex flex-col items-center justify-center p-6 text-center space-y-6">
        <div className="w-24 h-24 bg-red-100 text-red-600 rounded-3xl flex items-center justify-center text-4xl shadow-xl">⚠️</div>
        <div className="space-y-2">
          <h1 className="text-2xl font-black text-slate-900">{lang === 'hi' ? 'रिपोर्ट गायब है' : 'Report Missing'}</h1>
@@ -224,7 +224,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
     : "https://images.unsplash.com/photo-1597113366853-9a93ad3f5d05?q=80&w=2000";
 
   return (
-    <main className="min-h-screen mesh-bg py-8 md:py-12 px-4 md:px-6">
+    <main className="min-h-screen mesh-bg-warm py-8 md:py-12 px-4 md:px-6 pb-28">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Nav */}
         <div className="flex items-center justify-between mb-4">
@@ -322,7 +322,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
 
         {/* Vision Re-Analysis Section */}
         {!visionAnalysis && (
-          <div className="p-8 rounded-3xl space-y-4 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)]" style={{ background: '#0f172a' }}>
+          <div className="p-8 rounded-[2rem] space-y-4 border border-[var(--gold)]/30 shadow-xl" style={{ background: 'linear-gradient(135deg, var(--earth) 0%, var(--primary-dark) 100%)' }}>
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="space-y-2">
                 <h3 className="text-xl font-black text-emerald-400">{t.visionTitle}</h3>
@@ -346,7 +346,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         )}
 
         {visionAnalysis && (
-          <div className="p-8 rounded-3xl space-y-4 animate-fade-in" style={{ background: '#065f46' }}>
+          <div className="p-8 rounded-[2rem] space-y-4 animate-fade-in" style={{ background: 'var(--primary-dark)' }}>
              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: 'rgba(255,255,255,0.2)' }}>✨</div>
                 <h3 className="text-xl font-black text-white">{t.correctionApplied}</h3>
@@ -361,13 +361,13 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         {/* Treatment Plans */}
         <div className="space-y-6">
            <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-              <span className="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center text-xl">🛡️</span>
+              <span className="w-10 h-10 bg-[var(--primary)] text-white rounded-xl flex items-center justify-center text-xl">🛡️</span>
               {t.protocol}
            </h2>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {/* Organic Plan */}
-              <div className="glass p-6 md:p-8 space-y-6 border-l-8 border-l-lime-500 bg-white/80">
+              <div className="card-earth p-6 md:p-8 space-y-6 border-l-8 border-l-[var(--primary)]">
                  <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-lime-100 text-lime-700 rounded-2xl flex items-center justify-center text-2xl">🍃</div>
                     <h3 className="text-2xl font-black text-slate-900">{t.organic}</h3>
@@ -382,7 +382,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
               </div>
 
               {/* Chemical Plan */}
-              <div className="glass p-6 md:p-8 space-y-6 border-l-8 border-l-red-500 bg-white/80">
+              <div className="card-earth p-6 md:p-8 space-y-6 border-l-8 border-l-[var(--terracotta)]">
                  <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-red-100 text-red-700 rounded-2xl flex items-center justify-center text-2xl">🧪</div>
                     <h3 className="text-2xl font-black text-slate-900">{t.chemical}</h3>
@@ -399,7 +399,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
 
            {/* AI Full Description */}
            {data.recommendation?.text && (
-             <div className="p-10 rounded-3xl space-y-4 shadow-2xl relative overflow-hidden" style={{ background: '#0f172a' }}>
+             <div className="p-10 rounded-[2rem] space-y-4 shadow-2xl relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--earth) 0%, var(--primary-dark) 100%)' }}>
                 <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32" style={{ background: 'rgba(5,150,105,0.1)' }} />
                 <h3 className="text-xl font-black flex items-center gap-3 text-white">
                    <span className="text-emerald-400">AI</span> {t.advisory}
@@ -415,7 +415,7 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
         </div>
 
         {/* Prevention */}
-        <div className="glass p-8 bg-emerald-50 border-2 border-emerald-100 flex flex-col md:flex-row gap-8 items-center">
+        <div className="card-earth p-8 border-2 border-[var(--green-200)] flex flex-col md:flex-row gap-8 items-center">
            <div className="w-20 h-20 bg-white rounded-3xl shadow-lg flex-shrink-0 flex items-center justify-center text-4xl">🛡️</div>
            <div className="space-y-2">
               <h3 className="text-xl font-black text-emerald-900">{t.prevention}</h3>
@@ -425,9 +425,9 @@ export default function ResultDetailPage({ params }: { params: Promise<{ id: str
            </div>
         </div>
         {/* Chat Section */}
-        <div className="glass rounded-3xl overflow-hidden border-2 border-emerald-100 shadow-xl bg-white/80">
-          <div className="p-6 border-b border-emerald-100 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl">💬</div>
+        <div className="card-earth rounded-[2rem] overflow-hidden border border-[var(--green-200)] shadow-xl">
+          <div className="p-6 border-b border-[var(--cream-dark)] flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center text-xl">💬</div>
             <div>
               <h3 className="text-xl font-black text-slate-900">Ask About This Disease</h3>
               <p className="text-slate-500 text-sm font-medium">Get expert AI advice specific to your diagnosis</p>

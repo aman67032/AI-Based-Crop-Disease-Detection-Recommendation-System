@@ -50,12 +50,13 @@ export default function HistoryPage() {
       className="min-h-screen relative bg-cover bg-fixed bg-center selection:bg-[var(--green-200)] pb-12"
       style={{ backgroundImage: "url('/0cad129d9c0d34eaac50302009a2360c.jpg')" }}
     >
-      <div className="absolute inset-0 bg-[var(--bg)]/80 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 bg-[var(--bg-warm)]/85 backdrop-blur-sm z-0" />
       <div className="relative z-10 pt-20 md:pt-28 max-w-6xl mx-auto px-6 space-y-8 animate-fade-in-up">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-2">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--text)] tracking-tight">Scan History</h1>
-            <p className="text-[var(--text-secondary)] font-medium">Keep track of your plant health records.</p>
+            <span className="badge badge-earth text-sm">📊 Records</span>
+            <h1 className="text-jumbo text-[var(--text)] tracking-tight">Scan History</h1>
+            <p className="text-readable">Keep track of your plant health records.</p>
           </div>
           
           <div className="relative w-full md:w-auto">
@@ -67,12 +68,12 @@ export default function HistoryPage() {
               placeholder="Filter by crop or disease..."
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="w-full md:w-80 pl-12 pr-4 py-3 rounded-xl border-2 border-[var(--green-100)] bg-white/60 focus:border-[var(--primary)] outline-none font-medium text-[var(--text)] transition-all shadow-sm"
+              className="input-nature w-full md:w-80 pl-12 pr-4 py-3 rounded-xl text-base shadow-lg"
             />
           </div>
         </div>
 
-        <div className="glass-card rounded-[2rem] overflow-hidden border border-[var(--glass-border)] shadow-[var(--glass-shadow)] w-full bg-white/40 backdrop-blur-xl">
+        <div className="card-earth rounded-[2rem] overflow-hidden border border-[var(--glass-border)] shadow-xl w-full">
           {/* Mobile View: Cards */}
           <div className="md:hidden divide-y divide-[var(--green-100)]">
             {loading ? (

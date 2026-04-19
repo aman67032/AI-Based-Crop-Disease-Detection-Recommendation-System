@@ -12,7 +12,7 @@ export default function SearchPage() {
     const fetchDiseases = async () => {
       try {
         setLoading(true);
-        const API_BASE = window.location.hostname === "localhost" ? "http://localhost:8000" : `http://${window.location.hostname}:8000`;
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const res = await fetch(`${API_BASE}/api/diseases?search=${query}`);
         const data = await res.json();
         setDiseases(data.diseases || []);
@@ -35,13 +35,15 @@ export default function SearchPage() {
       className="min-h-screen relative bg-cover bg-fixed bg-center"
       style={{ backgroundImage: "url('/0cad129d9c0d34eaac50302009a2360c.jpg')" }}
     >
-      <div className="absolute inset-0 bg-[var(--bg)]/80 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 bg-[var(--bg-warm)]/85 backdrop-blur-sm z-0" />
       <div className="relative z-10">
 
       <div className="max-w-4xl mx-auto px-6 py-28 space-y-8 animate-fade-in-up">
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-extrabold text-[var(--text)] tracking-tight">Search Diseases</h1>
-          <p className="text-lg text-[var(--text-secondary)] font-medium">Find information on crop diseases, symptoms, and treatments.</p>
+          <span className="badge badge-earth text-sm">Disease Library</span>
+          <h1 className="text-jumbo text-[var(--text)] tracking-tight">Search Diseases</h1>
+          <p className="text-readable max-w-xl mx-auto">Find information on crop diseases, symptoms, and treatments.</p>
+          <div className="organic-divider max-w-[80px] mx-auto" />
         </div>
 
         {/* Search Bar */}
@@ -53,7 +55,7 @@ export default function SearchPage() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-5 rounded-[2rem] border-2 border-[var(--green-100)] bg-white/60 focus:border-[var(--primary)] focus:bg-white outline-none transition-all font-bold text-[var(--text)] text-lg shadow-[var(--glass-shadow)]"
+            className="input-nature w-full pl-14 pr-6 py-5 rounded-[2rem] text-lg shadow-lg"
             placeholder="Search for a disease or symptom..."
           />
         </div>
@@ -64,8 +66,8 @@ export default function SearchPage() {
             <div className="text-center py-12 text-[var(--text-secondary)] font-semibold animate-pulse">Loading diseases...</div>
           ) : diseases.length > 0 ? (
             diseases.map((disease) => (
-              <div key={disease.id} className="glass-card p-6 pb-8 md:p-8 card-hover relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-[var(--primary)] group-hover:bg-[var(--primary-light)] transition-colors"></div>
+              <div key={disease.id} className="card-earth p-6 pb-8 md:p-8 card-hover relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-[var(--primary)] group-hover:bg-[var(--gold)] transition-colors rounded-r" />
                 <h3 className="text-2xl font-bold text-[var(--text)] mb-4">{disease.name}</h3>
                 <div className="space-y-4">
                   {disease.symptoms && (
@@ -77,14 +79,14 @@ export default function SearchPage() {
                   {disease.treatment && (
                     <div>
                       <h4 className="text-sm font-bold text-[var(--primary-dark)] uppercase tracking-wider mb-1">Treatment Plan</h4>
-                      <div className="p-4 bg-[var(--green-50)] border border-[var(--green-100)] rounded-xl font-medium text-[var(--green-900)]">
+                      <div className="p-4 bg-[var(--bg-field)] border border-[var(--green-200)] rounded-xl font-medium text-[var(--green-900)]">
                         {disease.treatment}
                       </div>
                     </div>
                   )}
                   {disease.prevention && (
                     <div>
-                      <h4 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-1">Prevention</h4>
+                      <h4 className="text-sm font-bold text-[var(--terracotta)] uppercase tracking-wider mb-1">Prevention</h4>
                       <p className="text-[var(--text-secondary)] font-medium">{disease.prevention}</p>
                     </div>
                   )}
