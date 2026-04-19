@@ -66,7 +66,8 @@ export default function HomePage() {
       {/* ── Hero — Video Background with Warm Overlay ──────────────── */}
       <section className="relative min-h-[100vh] flex items-center justify-center pt-20 pb-32 md:pt-28 md:pb-40 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video src="/crop.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
+          <video src="/crop.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover md:hidden" />
+          <img src="/a68268f1c84cdb06d93efa985ce9566b.jpg" alt="Hero Background" className="hidden md:block w-full h-full object-cover" />
           <div className="hero-video-overlay" />
         </div>
 
@@ -173,7 +174,8 @@ export default function HomePage() {
           </div>
           <div className="relative order-first md:order-last">
             <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative max-w-md mx-auto border-4 border-[var(--cream)]">
-              <img src="/images%20(3).jfif" alt="Indian Farming" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+              <img src="/images%20(3).jfif" alt="Indian Farming" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 md:hidden" />
+              <video src="/crop.mp4" autoPlay loop muted playsInline className="hidden md:block w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--earth)]/70 to-transparent flex items-end p-8">
                 <div className="glass p-6 w-full backdrop-blur-xl bg-white/25 border-white/30 rounded-2xl">
                   <h4 className="text-white font-bold text-lg">Trusted & Reliable</h4>
