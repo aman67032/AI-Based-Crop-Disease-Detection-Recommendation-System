@@ -31,6 +31,27 @@ export default function ScanPage() {
     };
   }, []);
 
+  // Check for image passed from home page via sessionStorage
+  useEffect(() => {
+    const imageData = sessionStorage.getItem("scan_image_data");
+    const imageName = sessionStorage.getItem("scan_image_name");
+    const imageType = sessionStorage.getItem("scan_image_type");
+    if (imageData && imageName && imageType) {
+      // Convert dataURL back to File
+      fetch(imageData)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], imageName, { type: imageType });
+          setImage(file);
+          setPreview(imageData);
+          // Clear sessionStorage so it doesn't reload on next visit
+          sessionStorage.removeItem("scan_image_data");
+          sessionStorage.removeItem("scan_image_name");
+          sessionStorage.removeItem("scan_image_type");
+        });
+    }
+  }, []);
+
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);

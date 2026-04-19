@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Loader from "@/components/Loader";
-import { detectDisease } from "@/lib/api";
 
 const TRANSLATIONS: Record<string, any> = {
   en: {
@@ -33,15 +31,7 @@ export default function HomePage() {
   const [lang, setLang] = useState("en");
   const [isAuth, setIsAuth] = useState(false);
 
-  // Scan states
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isExecutingScan, setIsExecutingScan] = useState(false);
+
 
   useEffect(() => {
     setMounted(true);
@@ -51,104 +41,22 @@ export default function HomePage() {
     return () => window.removeEventListener("auth-change", checkAuth);
   }, []);
 
-  useEffect(() => {
-    if (isCameraOpen && videoRef.current && streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-    }
-  }, [isCameraOpen]);
-
   if (!mounted) return null;
 
   const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
 
-  // Camera Functions
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        streamRef.current = stream;
-        setIsCameraOpen(true);
-        setPreview(null);
-      }
-    } catch (err) {
-      console.error("Camera access denied");
-    }
-  };
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraOpen(false);
-  };
-
-  const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const file = new File([blob], `scan_${Date.now()}.jpg`, { type: "image/jpeg" });
-            setImage(file);
-            setPreview(URL.createObjectURL(file));
-            stopCamera();
-          }
-        }, "image/jpeg", 0.95);
-      }
-    }
-  };
-
+  // When user picks a file on the home page, store it and redirect to /scan
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) handleFile(file);
-  };
-
-  const handleFile = (file: File) => {
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-    stopCamera();
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      handleFile(file);
-    }
-  };
-
-  const executeScan = async () => {
-    if (!image) return;
-    setIsExecutingScan(true);
-    try {
-      const res = await detectDisease(image);
-      router.push(`/results/${res.id}`);
-    } catch (err) {
-      console.error("Scan failed:", err);
-      // Fallback for demo if API fails
-      setTimeout(() => {
-        router.push(`/history`);
-      }, 2000);
-    } finally {
-      setIsExecutingScan(false);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        sessionStorage.setItem("scan_image_data", reader.result as string);
+        sessionStorage.setItem("scan_image_name", file.name);
+        sessionStorage.setItem("scan_image_type", file.type);
+        router.push("/scan");
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -180,7 +88,7 @@ export default function HomePage() {
             </p>
 
             <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Link href="#scan" className="btn-primary w-full sm:w-auto text-xl py-5 px-10 shadow-2xl">
+              <Link href="/scan" className="btn-primary w-full sm:w-auto text-xl py-5 px-10 shadow-2xl">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 Scan Your Plant
               </Link>
@@ -278,7 +186,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Interactive Scan CTA Section ──────────────────────── */}
+      {/* ── Scan CTA Section ──────────────────────── */}
       <section id="scan" className="py-20 md:py-32 px-6 relative scroll-mt-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img src="/a68268f1c84cdb06d93efa985ce9566b.jpg" alt="Scan Background" className="w-full h-full object-cover" />
@@ -294,63 +202,27 @@ export default function HomePage() {
           </div>
 
           <div className="glass p-8 md:p-12 rounded-[2.5rem] border-[var(--glass-border)] shadow-2xl transition-all bg-white/60 backdrop-blur-xl">
-            {isCameraOpen ? (
-               <div className="space-y-6 animate-fade-in">
-                  <div className="relative aspect-video rounded-3xl overflow-hidden bg-black shadow-xl border-4 border-white">
-                    <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                    <button onClick={stopCamera} className="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center backdrop-blur-md">✕</button>
-                    <div className="absolute inset-0 border-[2px] border-[var(--primary-light)] border-dashed opacity-50 m-8 rounded-2xl pointer-events-none" />
-                  </div>
-                  <div className="flex justify-center">
-                    <button onClick={capturePhoto} className="w-20 h-20 bg-white border-4 border-[var(--green-100)] rounded-full flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition-all">
-                      <div className="w-14 h-14 bg-[var(--primary)] rounded-full" />
-                    </button>
-                  </div>
-                  <canvas ref={canvasRef} className="hidden" />
-               </div>
-            ) : isExecutingScan ? (
-               <div className="space-y-8 animate-fade-in py-12 flex flex-col items-center">
-                 <Loader />
-                 <h3 className="text-2xl font-bold text-[var(--text)] mt-8 animate-pulse">Analyzing Leaf Structure...</h3>
-               </div>
-            ) : preview ? (
-               <div className="space-y-8 animate-fade-in">
-                 <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl border-4 border-white max-w-2xl mx-auto">
-                   <img src={preview} className="w-full h-full object-cover" alt="Preview" />
-                   <button onClick={() => setPreview(null)} className="absolute top-4 right-4 w-10 h-10 bg-white/80 text-red-600 rounded-full flex items-center justify-center font-black hover:bg-red-600 hover:text-white transition-all shadow">✕</button>
-                 </div>
-                 <button onClick={executeScan} className="btn-primary w-full sm:w-auto px-12 py-4 text-xl shadow-lg inline-flex items-center justify-center gap-3">
-                   {t.analyzing} <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                 </button>
-               </div>
-            ) : (
-               <div 
-                 onDragOver={handleDragOver}
-                 onDragLeave={handleDragLeave}
-                 onDrop={handleDrop}
-                 className={`border-3 border-dashed rounded-3xl p-8 md:p-12 transition-all duration-300 flex flex-col items-center justify-center gap-6 min-h-[300px] bg-white/50 ${isDragging ? "border-[var(--primary)] bg-[var(--green-50)] scale-[1.02]" : "border-[var(--green-200)] hover:border-[var(--primary-light)]"}`}
-               >
-                 <div className="w-20 h-20 rounded-full bg-[var(--green-100)] text-[var(--primary)] flex items-center justify-center shadow-inner animate-float-slow">
-                   <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-                 </div>
-                 <div className="text-center space-y-2">
-                   <h3 className="text-xl font-bold text-[var(--text)]">{t.uploadOrDrop}</h3>
-                   <p className="text-[var(--text-muted)] text-sm font-medium">Supports JPG, PNG (Max 5MB)</p>
-                 </div>
-                 
-                 <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 w-full max-w-md mx-auto">
-                    <button onClick={startCamera} className="btn-primary flex-1 py-3 flex items-center justify-center gap-2 w-full">
-                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                     {t.takePhoto}
-                   </button>
-                   <label className="btn-secondary cursor-pointer py-3 px-8 flex items-center justify-center gap-2 flex-1 w-full">
-                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                     {t.chooseGallery}
-                     <input type="file" className="hidden" accept="image/*" onChange={onFileChange} />
-                   </label>
-                 </div>
-               </div>
-            )}
+            <div className="flex flex-col items-center justify-center gap-6 min-h-[300px]">
+              <div className="w-20 h-20 rounded-full bg-[var(--green-100)] text-[var(--primary)] flex items-center justify-center shadow-inner animate-float-slow">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+              </div>
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-bold text-[var(--text)]">{t.uploadOrDrop}</h3>
+                <p className="text-[var(--text-muted)] text-sm font-medium">Supports JPG, PNG (Max 5MB)</p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 w-full max-w-md mx-auto">
+                <Link href="/scan" className="btn-primary flex-1 py-3 flex items-center justify-center gap-2 w-full">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  {t.takePhoto}
+                </Link>
+                <label className="btn-secondary cursor-pointer py-3 px-8 flex items-center justify-center gap-2 flex-1 w-full">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  {t.chooseGallery}
+                  <input type="file" className="hidden" accept="image/*" onChange={onFileChange} />
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </section>

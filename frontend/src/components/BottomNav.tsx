@@ -39,7 +39,7 @@ export default function BottomNav() {
     {
       name: "Scan",
       nameHi: "स्कैन",
-      path: "/#scan",
+      path: "/scan",
       isFab: true,
       icon: (
         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -76,7 +76,7 @@ export default function BottomNav() {
       <div className="mx-2 mb-2 rounded-3xl bg-[var(--cream)]/95 backdrop-blur-2xl border border-[var(--gold-light)]/30 shadow-[0_-8px_40px_rgba(92,64,51,0.12)]">
         <div className="flex justify-between items-end px-3 py-2">
           {navItems.map((item, i) => {
-            const isActive = pathname === item.path || (item.path === "/#scan" && pathname === "/");
+            const isActive = pathname === item.path || (item.path === "/scan" && pathname === "/scan");
 
             if (item.isFab) {
               return (
